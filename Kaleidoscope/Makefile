@@ -1,4 +1,4 @@
-CC = clang++
+CC = clang++ #这里的编译器用的是clang, 如果要换成gcc的话, 可能要把10行的-O3去掉
 LFALGS = `llvm-config --cxxflags`
 LLIBS = `llvm-config --ldflags --system-libs --libs core`
 
@@ -40,4 +40,4 @@ clean:
 .PYHONY: reset
 
 reset: 
-		- rm *.o toy
+		- rm toy
