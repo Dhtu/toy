@@ -1,5 +1,13 @@
 #ifndef AST
 #define AST
+#include <algorithm>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 #include "LLVM.h"
 
 using namespace llvm;
@@ -8,8 +16,6 @@ using namespace llvm;
 // Abstract Syntax Tree (aka Parse Tree)
 //===----------------------------------------------------------------------===//
 
-// namespace
-// {
 
 /// ExprAST - Base class for all expression nodes.
 class ExprAST
@@ -100,7 +106,6 @@ public:
     Function *codegen();
 };
 
-// } // end anonymous namespace
 
 std::unique_ptr<ExprAST> LogError(const char *Str);
 
