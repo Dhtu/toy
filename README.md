@@ -5,6 +5,11 @@
 
 ## Kaleidoscope
 这是llvm官方的例程, 我把它拆分了一下.
+### lexer.l
+使用lex -o lexer.cpp lexer.l进行编译
+### parser.y
+使用bison -d -o parser.cpp parser.y进行编译
+初步实现函数调用
 ### AST
 把AST独立出来了, AST.cpp里写IR generation的实现方法
 ### Main
