@@ -1,5 +1,5 @@
 %{
-    #include "node.h"
+    #include "ast.h"
     #include <stdio.h>
     BlockAST *programBlock; /* the top level root ExprAST of our final AST */
 

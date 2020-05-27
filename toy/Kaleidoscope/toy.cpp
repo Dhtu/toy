@@ -6,7 +6,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "AST.h"
+#include "ast.h"
 
 using namespace llvm;
 

@@ -1,7 +1,7 @@
 #ifndef AstParser
 #define AstParser
 //这个库作为Parser的驱动, 下面提供两个方法
-#include "AST.h"
+#include "ast.h"
 
 //关于参数接口的两个想法, 一个是为所有的AST创建一个基类, 然后用Vector<AST>作为参数传递
 //Vector<AST> getAST();
