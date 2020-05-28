@@ -48,13 +48,13 @@ public:
 /// BinaryExprAST - Expression class for a binary operator.
 class BinaryExprAST : public ExprAST
 {
-    char Op;
-    std::unique_ptr<ExprAST> LHS, RHS;
-
 public:
-    BinaryExprAST(char Op, std::unique_ptr<ExprAST> LHS,
-                  std::unique_ptr<ExprAST> RHS)
-        : Op(Op), LHS(std::move(LHS)), RHS(std::move(RHS)) {}
+    char Op;
+    ExprAST *LHS, *RHS;
+
+    BinaryExprAST(char Op, ExprAST *LHS,
+                  ExprAST *RHS)
+        : Op(Op), LHS(LHS), RHS(RHS) {}
 
     Value *codegen() override;
 };
@@ -62,13 +62,13 @@ public:
 /// CallExprAST - Expression class for function calls.
 class CallExprAST : public ExprAST
 {
-    std::string Callee;
-    std::vector<std::unique_ptr<ExprAST>> Args;
 
 public:
+    std::string Callee;
+    std::vector<ExprAST *> Args;
     CallExprAST(const std::string &Callee,
-                std::vector<std::unique_ptr<ExprAST>> Args)
-        : Callee(Callee), Args(std::move(Args)) {}
+                std::vector<ExprAST *> Args)
+        : Callee(Callee), Args(Args) {}
 
     Value *codegen() override;
 };

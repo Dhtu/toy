@@ -823,7 +823,7 @@ SAVE_TOKEN; return TDOUBLE;
 case 12:
 YY_RULE_SETUP
 #line 25 "lexer.l"
-return TOKEN(TEQUAL);
+{yylval.yychar = *yytext; return BINOP;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
@@ -838,7 +838,7 @@ return TOKEN(TCNE);
 case 15:
 YY_RULE_SETUP
 #line 29 "lexer.l"
-return TOKEN(TCLT);
+{yylval.yychar = *yytext; return BINOP;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
@@ -848,7 +848,7 @@ return TOKEN(TCLE);
 case 17:
 YY_RULE_SETUP
 #line 31 "lexer.l"
-return TOKEN(TCGT);
+{yylval.yychar = *yytext; return BINOP;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
@@ -888,22 +888,22 @@ return TOKEN(TDOT);
 case 25:
 YY_RULE_SETUP
 #line 41 "lexer.l"
-return TOKEN(TPLUS);
+{yylval.yychar = *yytext; return BINOP;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 42 "lexer.l"
-return TOKEN(TMINUS);
+{yylval.yychar = *yytext; return BINOP;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 43 "lexer.l"
-return TOKEN(TMUL);
+{yylval.yychar = *yytext; return BINOP;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 44 "lexer.l"
-return TOKEN(TDIV);
+{yylval.yychar = *yytext; return BINOP;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
@@ -913,7 +913,7 @@ YY_RULE_SETUP
 case 30:
 YY_RULE_SETUP
 #line 47 "lexer.l"
-{printf("Unknown token!\n"); yylval.yychar = yytext;}
+{printf("Unknown token!\n"); yylval.yychar = *yytext;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP

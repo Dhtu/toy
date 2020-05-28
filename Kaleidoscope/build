@@ -1,3 +1,5 @@
 flex -o lexer.cpp lexer.l
 bison -d parser.y
 mv parser.tab.c parser.tab.cpp
+make
+./Main

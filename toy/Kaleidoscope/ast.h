@@ -77,7 +77,7 @@ public:
 class CallExprAST : public ExpressionAST 
 {
 public:
-	const VariableExprAST& id;
+    const VariableExprAST& id;
     ExpressionList arguments;
     CallExprAST(const VariableExprAST& id, ExpressionList& arguments) :
         id(id), arguments(arguments) { }
@@ -117,6 +117,60 @@ public:
 
   //  virtual llvm::Val* codeGen(CodeGenContext& context);
 };
+
+/// ReturnAST - statement class for return.
+class ReturnAST : public StmtAST
+{
+public:
+	ExpressionAST& expression;
+
+	ReturnAST(ExpressionAST& expression) : 
+		expression(expression) { }
+
+	//virtual llvm::Value* codeGen(CodeGenContext& context);
+};
+
+class ExternAST : public StmtAST
+{
+public:
+    const VariableExprAST& type;
+    const VariableExprAST& id;
+    VariableList arguments;
+
+    ExternAST(const VariableExprAST& type, const VariableExprAST& id,
+            const VariableList& arguments) :
+        type(type), id(id), arguments(arguments) {}
+
+//    virtual llvm::Value* codeGen(CodeGenContext& context);
+};
+
+/// IfExprAST - Statement class for if/then/else.
+class IfStmtAST : public StmtAST {
+public:
+    ExpressionAST& Cond;
+    ExpressionAST& Then;
+    ExpressionAST& Else;
+
+    IfStmtAST(ExpressionAST& Cond, ExpressionAST& Then,
+            ExpressionAST& Else)
+    : Cond(Cond), Then(Then), Else(Else) {}
+	//virtual llvm::Value* codeGen(CodeGenContext& context);
+};
+
+/// ForExprAST - Statement class for for/in
+//class ForStmtAST : public StmtAST {
+//public:
+//    const VariableExprAST& VarName;
+//    ExpressionAST& Start;
+//    ExpressionAST& End;
+///    ExpressionAST& Step;
+//    ExpressionAST& Body;
+
+//    ForStmtAST(const VariableExprAST& VarName, ExpressionAST& Start, ExpressionAST& End, Expression& Step, Expression& Body) :
+//    VarName(VarName), Start(Start), End(End), Step(Step), Body(Body) { }
+
+//    virtual llvm::Value* codeGen(CodeGenContext& context);
+//};
 
 /// VarDeclAST - Statement class for variable declaration.
 class VarDeclAST : public StmtAST 

@@ -55,23 +55,24 @@ extern int yydebug;
     TCGT = 265,
     TCGE = 266,
     TEQUAL = 267,
-    TLPAREN = 268,
-    TRPAREN = 269,
-    TLBRACE = 270,
-    TRBRACE = 271,
-    TCOMMA = 272,
-    TDOT = 273,
-    TPLUS = 274,
-    TMINUS = 275,
-    TMUL = 276,
-    TDIV = 277,
-    TIF = 278,
-    TTHEN = 279,
-    TELSE = 280,
-    TFOR = 281,
-    TIN = 282,
-    TRETURN = 283,
-    TEXTERN = 284
+    BINOP = 268,
+    TLPAREN = 269,
+    TRPAREN = 270,
+    TLBRACE = 271,
+    TRBRACE = 272,
+    TCOMMA = 273,
+    TDOT = 274,
+    TPLUS = 275,
+    TMINUS = 276,
+    TMUL = 277,
+    TDIV = 278,
+    TIF = 279,
+    TTHEN = 280,
+    TELSE = 281,
+    TFOR = 282,
+    TIN = 283,
+    TRETURN = 284,
+    TEXTERN = 285
   };
 #endif
 
@@ -84,10 +85,11 @@ union YYSTYPE
 
     ExprAST *expr;
     std::string *string;
-    char *yychar;
+    std::vector<ExprAST*> *exprvec;
+    char yychar;
     int token;
 
-#line 91 "parser.tab.h" /* yacc.c:1909  */
+#line 93 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

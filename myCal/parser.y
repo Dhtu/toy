@@ -1,6 +1,8 @@
 %{
     #include "ast.h"
+    #include <iostream>
     #include <stdio.h>
+    #include <stdlib.h>
     BlockAST *programBlock; /* the top level root ExprAST of our final AST */
 
     extern int yylex();
@@ -26,9 +28,11 @@
    they represent.
  */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE
-%token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL
+%token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL BINOP
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT
 %token <token> TPLUS TMINUS TMUL TDIV
+%token <token> TIF TTHEN TELSE TFOR TIN
+%token <token> TRETURN TEXTERN
 
 /* Define the type of ExprAST our nonterminal symbols represent.
    The types refer to the %union declaration above. Ex: when
@@ -40,7 +44,7 @@
 %type <varvec> func_decl_args
 %type <exprvec> call_args
 %type <block> program stmts block
-%type <stmt> stmt var_decl func_decl
+%type <stmt> stmt var_decl func_decl extern_decl if_decl
 %type <token> comparison
 
 /* Operator precedence for mathematical operators */
@@ -51,6 +55,9 @@
 
 %%
 
+
+
+
 program : stmts { programBlock = $1; }
         ;
         
@@ -58,8 +65,12 @@ stmts : stmt { $$ = new BlockAST(); $$->statements.push_back($<stmt>1); }
       | stmts stmt { $1->statements.push_back($<stmt>2); }
       ;
 
-stmt : var_decl | func_decl
+stmt : var_decl 
+     | func_decl 
+     | extern_decl
      | expr { $$ = new ExprStmtAST(*$1); }
+     | TRETURN expr { $$ = new ReturnAST(*$2); }
+     | if_decl
      ;
 
 block : TLBRACE stmts TRBRACE { $$ = $2; }
@@ -74,6 +85,14 @@ func_decl : ident ident TLPAREN func_decl_args TRPAREN block
             { $$ = new FunctionAST(*$1, *$2, *$4, *$6); delete $4; }
           ;
     
+extern_decl : 
+            TEXTERN ident ident TLPAREN func_decl_args TRPAREN { $$ = new ExternAST(*$2, *$3, *$5); delete $5; }
+	    ;
+
+if_decl :
+        TIF expr TTHEN expr TELSE expr { $$ = new IfStmtAST(*$2, *$4, *$6);}
+	;
+
 func_decl_args : /*blank*/  { $$ = new VariableList(); }
           | var_decl { $$ = new VariableList(); $$->push_back($<var_decl>1); }
           | func_decl_args TCOMMA var_decl { $1->push_back($<var_decl>3); }

@@ -22,13 +22,13 @@
 [a-zA-Z_][a-zA-Z0-9_]*  SAVE_TOKEN; return TIDENTIFIER;
 [0-9]+                  SAVE_TOKEN; return TINTEGER;
 [0-9]*\.?[0-9]+         SAVE_TOKEN; return TDOUBLE;
-"="                     return TOKEN(TEQUAL);
+"="                     {yylval.yychar = *yytext; return BINOP;}
 "=="                    return TOKEN(TCEQ);
 "!="                    return TOKEN(TCNE);
 
-"<"                     return TOKEN(TCLT);
+"<"                     {yylval.yychar = *yytext; return BINOP;}
 "<="                    return TOKEN(TCLE);
-">"                     return TOKEN(TCGT);
+">"                     {yylval.yychar = *yytext; return BINOP;}
 ">="                    return TOKEN(TCGE);
 "("                     return TOKEN(TLPAREN);
 ")"                     return TOKEN(TRPAREN);
@@ -38,12 +38,12 @@
 ","                     return TOKEN(TCOMMA);
 "."                     return TOKEN(TDOT);
 
-"+"                     return TOKEN(TPLUS);
-"-"                     return TOKEN(TMINUS);
-"*"                     return TOKEN(TMUL);
-"/"                     return TOKEN(TDIV);
+"+"                     {yylval.yychar = *yytext; return BINOP;}
+"-"                     {yylval.yychar = *yytext; return BINOP;}
+"*"                     {yylval.yychar = *yytext; return BINOP;}
+"/"                     {yylval.yychar = *yytext; return BINOP;}
 
 "//".*                  {printf("注释: %s\n",yytext);}
-.                       {printf("Unknown token!\n"); yylval.yychar = yytext;}
+.                       {printf("Unknown token!\n"); yylval.yychar = *yytext;}
 
 %%
