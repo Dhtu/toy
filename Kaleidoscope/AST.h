@@ -16,7 +16,6 @@ using namespace llvm;
 // Abstract Syntax Tree (aka Parse Tree)
 //===----------------------------------------------------------------------===//
 
-
 /// ExprAST - Base class for all expression nodes.
 class ExprAST
 {
@@ -29,22 +28,20 @@ public:
 /// NumberExprAST - Expression class for numeric literals like "1.0".
 class NumberExprAST : public ExprAST
 {
-    double Val;
 
 public:
+    double Val;
     NumberExprAST(double Val) : Val(Val) {}
-
     Value *codegen() override;
 };
 
 /// VariableExprAST - Expression class for referencing a variable, like "a".
 class VariableExprAST : public ExprAST
 {
-    std::string Name;
 
 public:
+    std::string Name;
     VariableExprAST(const std::string &Name) : Name(Name) {}
-
     Value *codegen() override;
 };
 
@@ -105,7 +102,6 @@ public:
 
     Function *codegen();
 };
-
 
 std::unique_ptr<ExprAST> LogError(const char *Str);
 
