@@ -13,6 +13,7 @@
 
 [ \t\n]                 ;
 "extern"                return TOKEN(TEXTERN);
+"def"                   return TOKEN(TDEF);
 "return"                return TOKEN(TRETURN);
 "if"                    return TOKEN(TIF);
 "then"                  return TOKEN(TTHEN);
