@@ -1,6 +1,6 @@
 // #include "AstParser.h"
 // #include "IrGenerator.h"
-
+#include "AST.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -18,7 +18,12 @@ int main()
     //object code生成入口
 
     printf("> "); 
+    // Make the module, which holds all the code.
+    TheModule = std::make_unique<Module>("my cool jit", TheContext);
     yyparse();
+
+    // Print out all of the generated code.
+    TheModule->print(errs(), nullptr);
 
     return 0;
 }

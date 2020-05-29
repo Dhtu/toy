@@ -10,8 +10,8 @@
 %option noyywrap
 
 %%
-
-[ \t\n]                 ;
+[ \t\n]                   ;
+";"                     return TOKEN(TENDLINE);
 "extern"                return TOKEN(TEXTERN);
 "def"                   return TOKEN(TDEF);
 "return"                return TOKEN(TRETURN);
@@ -21,7 +21,6 @@
 "for"                   return TOKEN(TFOR);
 "in"                    return TOKEN(TIN);
 [a-zA-Z_][a-zA-Z0-9_]*  SAVE_TOKEN; return TIDENTIFIER;
-[0-9]+                  SAVE_TOKEN; return TINTEGER;
 [0-9]*\.?[0-9]+         SAVE_TOKEN; return TDOUBLE;
 "="                     {yylval.yychar = *yytext; return BINOP;}
 "=="                    return TOKEN(TCEQ);
@@ -45,6 +44,6 @@
 "/"                     {yylval.yychar = *yytext; return BINOP;}
 
 "//".*                  {printf("注释: %s\n",yytext);}
-.                       {printf("Unknown token!\n"); yylval.yychar = *yytext;}
-
+.                       {printf("Unknown token: %s\n",yytext); yylval.yychar = *yytext;}
+EOF                     {yyterminate();}
 %%

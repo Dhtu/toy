@@ -1,5 +1,6 @@
 #ifndef AST_h
 #define AST_h
+#include <iostream>
 #include <algorithm>
 #include <cctype>
 #include <cstdio>
@@ -98,6 +99,18 @@ public:
                 ExprAST *Body)
         : Proto(Proto), Body(Body) {}
     Function *codegen();
+    void Hello();
+};
+
+/// IfExprAST - Expression class for if/then/else.
+class IfExprAST : public ExprAST
+{
+public:
+    ExprAST *Cond, *Then, *Else;
+  IfExprAST(ExprAST *Cond, ExprAST *Then,ExprAST *Else)
+      : Cond(Cond), Then(Then), Else(Else) {}
+
+  Value *codegen() override;
 };
 
 std::unique_ptr<ExprAST> LogError(const char *Str);

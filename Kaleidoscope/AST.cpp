@@ -100,8 +100,14 @@ Function *PrototypeAST::codegen()
     return F;
 }
 
+void FunctionAST::Hello()
+{
+    std::cout<<"hello"<<std::endl;
+}
+
 Function *FunctionAST::codegen()
 {
+    
     // First, check for an existing function from a previous 'extern' declaration.
     Function *TheFunction = TheModule->getFunction(Proto->getName());
 

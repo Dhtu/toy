@@ -73,7 +73,8 @@ extern int yydebug;
     TIN = 283,
     TRETURN = 284,
     TEXTERN = 285,
-    TDEF = 286
+    TDEF = 286,
+    TENDLINE = 287
   };
 #endif
 
@@ -82,7 +83,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 12 "parser.y" /* yacc.c:1909  */
+#line 17 "parser.y" /* yacc.c:1909  */
 
     ExprAST *expr;
     PrototypeAST *prototype;
@@ -93,7 +94,7 @@ union YYSTYPE
     char yychar;
     int token;
 
-#line 97 "parser.tab.h" /* yacc.c:1909  */
+#line 98 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

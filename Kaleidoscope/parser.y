@@ -6,6 +6,11 @@
 
     extern int yylex();
     void yyerror(const char *s) { printf("ERROR: %s\n", s); }
+
+    void Log(const std::string Str)
+    {
+        std::cout<<Str<<std::endl;
+    }
 %}
 
 /* Represents the many different ways we can access our data */
@@ -29,14 +34,14 @@
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT
 %token <token> TPLUS TMINUS TMUL TDIV
 %token <token> TIF TTHEN TELSE TFOR TIN
-%token <token> TRETURN TEXTERN TDEF
+%token <token> TRETURN TEXTERN TDEF TENDLINE
 
 /* Define the type of ExprAST our nonterminal symbols represent.
    The types refer to the %union declaration above. Ex: when
    we call an ident (defined by union type ident) we are really
    calling an (NIdentifier*). It makes the compiler happy.
  */
-%type <expr> expr
+%type <expr> expr if_decl
 %type <exprvec> call_args
 %type <function> func_decl
 %type <prototype> prototype
@@ -56,20 +61,70 @@ call_args : /*blank*/  { $$ = new std::vector<ExprAST*>(); }
           ;
 program : astlist;
 
-astlist : /*blank*/  { }
-        | ast {
-            std::cout<<"parse ast\n";
+astlist : /*blank*/  {
+            std::cout<<"> ";
+         }
+        | ast TENDLINE{
+            std::cout<<"Parse ast\n";
+            std::cout<<"> ";
+            }
+        | ast{
+            std::cout<<"Parse ast\n";
+            std::cout<<"> ";
+            }
+        | astlist ast TENDLINE{
+            std::cout<<"Add ast\n";
+            std::cout<<"> ";
             }
         | astlist ast{
-            std::cout<<"add ast\n";
+            std::cout<<"Add ast\n";
+            std::cout<<"> ";
             }
 
-ast : expr  {
-    std::cout<<"ast parse expr\n";
-    }
-        | func_decl {
-            std::cout<<"ast parse func_decl\n";
+ast : expr
+        {
+            Log("Parse Top Level Expr");
+            auto prototype = new PrototypeAST("__anon_expr",*(new std::vector<std::string>()));
+            auto top = new FunctionAST(prototype,$1);
+            if(top!=NULL)
+            {
+                Log("top!=null");
             }
+
+            if (auto FnAST = top)
+            {
+                if (auto *FnIR = FnAST->codegen())
+                {
+                    fprintf(stderr, "Read top-level :");
+                    FnIR->print(errs());
+                    fprintf(stderr, "\n");
+                }
+            }
+        }
+    | func_decl
+        {
+            Log("Parsed a function definition.");
+            if (auto *FnIR = $1->codegen())
+            {
+                fprintf(stderr, "Read function :");
+                FnIR->print(errs());
+                fprintf(stderr, "\n");
+            }
+        }
+    | TEXTERN prototype
+        {
+            Log("Parsed a function extern declaration.");
+            if (auto *FnIR = $2->codegen())
+            {
+                fprintf(stderr, "Read : ");
+                FnIR->print(errs());
+                fprintf(stderr, "\n");
+            }
+        }
+    | if_decl {
+            std::cout<<"ast parse if_decl\n";
+           };
+
 
 
 func_decl : TDEF prototype expr{
@@ -82,6 +137,10 @@ prototype : TIDENTIFIER TLPAREN func_decl_args TRPAREN{
     std::cout<<"Prototype length: "<<dynamic_cast<PrototypeAST *>($$)->Args.size()<<std::endl;
 }
 
+if_decl : TIF expr TTHEN expr TELSE expr {
+        //   $$ = new IfExprAST($2, $4, $6);
+        //   std::cout<<"IF:"<<std::endl;
+};
 
 func_decl_args : /*blank*/  { $$ = new std::vector<std::string>(); }
            | TIDENTIFIER { $$ = new std::vector<std::string>(); $$->push_back(*$1); }
@@ -110,7 +169,7 @@ expr : TDOUBLE {
         std::cout<<"Call length: "<<dynamic_cast<CallExprAST *>($$)->Args.size()<<std::endl;
     }
     | expr BINOP expr{
-        std::cout<<"binOP: "<<char($2)<<std::endl;
+        std::cout<<"BinOP: "<<char($2)<<std::endl;
         $$ = new BinaryExprAST(char($2),$1,$3);
     }
 
