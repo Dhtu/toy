@@ -1,5 +1,6 @@
-flex -o lexer.cpp lexer.l
-bison -d parser.y
-mv parser.tab.c parser.tab.cpp
-make
+# flex -o lexer.cpp lexer.l
+# bison -d parser.y
+# mv parser.tab.c parser.tab.cpp
+make Main
 ./Main
+echo "我已经重写了make文件, 现在只要在这个目录下面使用make命令就可以重新构建, 理论上会比原来的./build快很多"
