@@ -88,12 +88,13 @@ union YYSTYPE
     PrototypeAST *prototype;
     FunctionAST *function;
     std::string *string;
+    std::vector<AST*> *astvec;
     std::vector<ExprAST*> *exprvec;
     std::vector<std::string> *strvec;
     char yychar;
     int token;
 
-#line 97 "parser.tab.h" /* yacc.c:1909  */
+#line 98 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

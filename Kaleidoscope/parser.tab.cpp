@@ -150,12 +150,13 @@ union YYSTYPE
     PrototypeAST *prototype;
     FunctionAST *function;
     std::string *string;
+    std::vector<AST*> *astvec;
     std::vector<ExprAST*> *exprvec;
     std::vector<std::string> *strvec;
     char yychar;
     int token;
 
-#line 159 "parser.tab.c" /* yacc.c:355  */
+#line 160 "parser.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -172,7 +173,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 176 "parser.tab.c" /* yacc.c:358  */
+#line 177 "parser.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -412,18 +413,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  7
+#define YYFINAL  13
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   18
+#define YYLAST   28
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  32
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  3
+#define YYNNTS  8
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  8
+#define YYNRULES  15
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  13
+#define YYNSTATES  25
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -472,7 +473,8 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    52,    52,    53,    54,    74,    80,    85,    95
+       0,    53,    57,    59,    60,    62,    63,    66,    71,    77,
+      78,    79,    82,    88,    93,   103
 };
 #endif
 
@@ -485,7 +487,8 @@ static const char *const yytname[] =
   "TCEQ", "TCNE", "TCLT", "TCLE", "TCGT", "TCGE", "TEQUAL", "BINOP",
   "TLPAREN", "TRPAREN", "TLBRACE", "TRBRACE", "TCOMMA", "TDOT", "TPLUS",
   "TMINUS", "TMUL", "TDIV", "TIF", "TTHEN", "TELSE", "TFOR", "TIN",
-  "TRETURN", "TEXTERN", "TDEF", "$accept", "call_args", "expr", YY_NULLPTR
+  "TRETURN", "TEXTERN", "TDEF", "$accept", "program", "astlist", "ast",
+  "func_decl", "prototype", "func_decl_args", "expr", YY_NULLPTR
 };
 #endif
 
@@ -501,10 +504,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -10
+#define YYPACT_NINF -12
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-10)))
+  (!!((Yystate) == (-12)))
 
 #define YYTABLE_NINF -1
 
@@ -515,8 +518,9 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -2,   -10,   -10,    -2,     0,    -8,    -9,   -10,    -2,    -2,
-     -10,    -8,    -8
+      -3,   -12,   -12,     0,     6,    12,    -3,   -12,   -12,     2,
+      -7,     3,     0,   -12,   -12,     0,   -12,    13,     2,     2,
+     -12,   -11,   -12,    15,   -12
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -524,20 +528,21 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       2,     7,     5,     0,     0,     3,     0,     1,     0,     0,
-       6,     4,     8
+       0,    14,    12,     0,     0,     0,     2,     3,     6,     5,
+       0,     0,     0,     1,     4,     0,    13,     9,     7,    15,
+      10,     0,     8,     0,    11
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -10,   -10,    -1
+     -12,   -12,   -12,    14,   -12,   -12,   -12,    -2
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     4,     5
+      -1,     5,     6,     7,     8,    12,    21,     9
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -545,34 +550,39 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-       7,     1,     6,     2,     9,     9,    10,    11,    12,     0,
-       0,     0,     3,     0,     0,     0,     0,     0,     8
+       1,    10,     2,     1,    22,     2,    15,    23,    16,    11,
+      18,     3,    13,    19,     3,    15,    20,    17,    24,     0,
+      14,     0,     0,     0,     0,     0,     0,     0,     4
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     3,     3,     5,    13,    13,    15,     8,     9,    -1,
-      -1,    -1,    14,    -1,    -1,    -1,    -1,    -1,    18
+       3,     3,     5,     3,    15,     5,    13,    18,    15,     3,
+      12,    14,     0,    15,    14,    13,     3,    14,     3,    -1,
+       6,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    31
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,     5,    14,    33,    34,    34,     0,    18,    13,
-      15,    34,    34
+       0,     3,     5,    14,    31,    33,    34,    35,    36,    39,
+      39,     3,    37,     0,    35,    13,    15,    14,    39,    39,
+       3,    38,    15,    18,     3
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    32,    33,    33,    33,    34,    34,    34,    34
+       0,    32,    33,    34,    34,    35,    35,    36,    37,    38,
+      38,    38,    39,    39,    39,    39
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     0,     1,     3,     1,     3,     1,     3
+       0,     2,     1,     1,     2,     1,     1,     3,     4,     0,
+       1,     3,     1,     3,     1,     3
 };
 
 
@@ -1248,67 +1258,109 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 2:
-#line 52 "parser.y" /* yacc.c:1646  */
-    { (yyval.exprvec) = new std::vector<ExprAST*>(); }
-#line 1255 "parser.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 3:
-#line 53 "parser.y" /* yacc.c:1646  */
-    { (yyval.exprvec) = new std::vector<ExprAST*>(); (yyval.exprvec)->push_back((yyvsp[0].expr)); }
-#line 1261 "parser.tab.c" /* yacc.c:1646  */
+        case 3:
+#line 59 "parser.y" /* yacc.c:1646  */
+    {std::cout<<"parse ast\n";}
+#line 1265 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 54 "parser.y" /* yacc.c:1646  */
-    { (yyvsp[-2].exprvec)->push_back((yyvsp[0].expr));(yyval.exprvec)=(yyvsp[-2].exprvec); }
-#line 1267 "parser.tab.c" /* yacc.c:1646  */
+#line 60 "parser.y" /* yacc.c:1646  */
+    {std::cout<<"add ast\n";}
+#line 1271 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 74 "parser.y" /* yacc.c:1646  */
+#line 62 "parser.y" /* yacc.c:1646  */
+    {std::cout<<"ast parse expr\n";}
+#line 1277 "parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 6:
+#line 63 "parser.y" /* yacc.c:1646  */
+    {std::cout<<"ast parse func_decl\n";}
+#line 1283 "parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 7:
+#line 66 "parser.y" /* yacc.c:1646  */
+    {
+    (yyval.function) = new FunctionAST((yyvsp[-1].prototype),(yyvsp[0].expr));
+    std::cout<<"Function: "<<std::endl;
+}
+#line 1292 "parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 8:
+#line 71 "parser.y" /* yacc.c:1646  */
+    {
+    (yyval.prototype) = new PrototypeAST(*(yyvsp[-3].string),*(yyvsp[-1].strvec));
+    std::cout<<"Prototype length: "<<dynamic_cast<PrototypeAST *>((yyval.prototype))->Args.size()<<std::endl;
+}
+#line 1301 "parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 9:
+#line 77 "parser.y" /* yacc.c:1646  */
+    { (yyval.strvec) = new std::vector<std::string>(); }
+#line 1307 "parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 10:
+#line 78 "parser.y" /* yacc.c:1646  */
+    { (yyval.strvec) = new std::vector<std::string>(); (yyval.strvec)->push_back(*(yyvsp[0].string)); }
+#line 1313 "parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 11:
+#line 79 "parser.y" /* yacc.c:1646  */
+    { (yyvsp[-2].strvec)->push_back(*(yyvsp[0].string));(yyval.strvec)=(yyvsp[-2].strvec); }
+#line 1319 "parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 12:
+#line 82 "parser.y" /* yacc.c:1646  */
     { 
         auto Result = new NumberExprAST(atof((yyvsp[0].string)->c_str())); 
         delete (yyvsp[0].string);
         std::cout<<"Parse double: "<<((*Result).Val)<<std::endl;
         (yyval.expr) = Result;
     }
-#line 1278 "parser.tab.c" /* yacc.c:1646  */
+#line 1330 "parser.tab.c" /* yacc.c:1646  */
     break;
 
-  case 6:
-#line 80 "parser.y" /* yacc.c:1646  */
+  case 13:
+#line 88 "parser.y" /* yacc.c:1646  */
     {
         auto Result = (yyvsp[-1].expr);
         std::cout<<"Parse (expr)"<<std::endl;
         (yyval.expr) = Result;
     }
-#line 1288 "parser.tab.c" /* yacc.c:1646  */
+#line 1340 "parser.tab.c" /* yacc.c:1646  */
     break;
 
-  case 7:
-#line 85 "parser.y" /* yacc.c:1646  */
+  case 14:
+#line 93 "parser.y" /* yacc.c:1646  */
     {
         auto Result = new VariableExprAST(*(yyvsp[0].string)); 
         delete (yyvsp[0].string);
         std::cout<<"Parse Variable: "<<((*Result).Name)<<std::endl;
         (yyval.expr) = Result;
     }
-#line 1299 "parser.tab.c" /* yacc.c:1646  */
+#line 1351 "parser.tab.c" /* yacc.c:1646  */
     break;
 
-  case 8:
-#line 95 "parser.y" /* yacc.c:1646  */
+  case 15:
+#line 103 "parser.y" /* yacc.c:1646  */
     {
         std::cout<<"binOP: "<<char((yyvsp[-1].token))<<std::endl;
         (yyval.expr) = new BinaryExprAST(char((yyvsp[-1].token)),(yyvsp[-2].expr),(yyvsp[0].expr));
     }
-#line 1308 "parser.tab.c" /* yacc.c:1646  */
+#line 1360 "parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1312 "parser.tab.c" /* yacc.c:1646  */
+#line 1364 "parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

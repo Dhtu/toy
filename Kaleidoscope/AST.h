@@ -1,5 +1,5 @@
-#ifndef AST
-#define AST
+#ifndef AST_h
+#define AST_h
 #include <algorithm>
 #include <cctype>
 #include <cstdio>
@@ -15,9 +15,17 @@ using namespace llvm;
 //===----------------------------------------------------------------------===//
 // Abstract Syntax Tree (aka Parse Tree)
 //===----------------------------------------------------------------------===//
+class AST
+{
+public:
+    virtual ~AST() = default;
+
+    virtual Value *codegen() = 0;
+};
+
 
 /// ExprAST - Base class for all expression nodes.
-class ExprAST
+class ExprAST:public AST
 {
 public:
     virtual ~ExprAST() = default;

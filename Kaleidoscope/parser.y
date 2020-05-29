@@ -14,6 +14,7 @@
     PrototypeAST *prototype;
     FunctionAST *function;
     std::string *string;
+    std::vector<AST*> *astvec;
     std::vector<ExprAST*> *exprvec;
     std::vector<std::string> *strvec;
     char yychar;
@@ -46,13 +47,20 @@
 %left TPLUS TMINUS
 %left TMUL TDIV
 
-// %start program
+%start program
 
 %%
-// call_args : /*blank*/  { $$ = new std::vector<ExprAST*>(); }
-//           | expr { $$ = new std::vector<ExprAST*>(); $$->push_back($1); }
-//           | call_args TCOMMA expr  { $1->push_back($3);$$=$1; }
-//           ;
+call_args : /*blank*/  { $$ = new std::vector<ExprAST*>(); }
+          | expr { $$ = new std::vector<ExprAST*>(); $$->push_back($1); }
+          | call_args TCOMMA expr  { $1->push_back($3);$$=$1; }
+          ;
+program : astlist;
+
+astlist : ast {std::cout<<"parse ast\n";}
+        | astlist ast{std::cout<<"add ast\n";}
+
+ast : expr  {std::cout<<"ast parse expr\n";}
+        | func_decl {std::cout<<"ast parse func_decl\n";}
 
 
 func_decl : TDEF prototype expr{
@@ -68,7 +76,7 @@ prototype : TIDENTIFIER TLPAREN func_decl_args TRPAREN{
 
 func_decl_args : /*blank*/  { $$ = new std::vector<std::string>(); }
            | TIDENTIFIER { $$ = new std::vector<std::string>(); $$->push_back(*$1); }
-           | func_decl_args TIDENTIFIER { $1->push_back(*$2);$$=$1; }
+           | func_decl_args TCOMMA TIDENTIFIER { $1->push_back(*$3);$$=$1; }
            ;
 
 expr : TDOUBLE { 
