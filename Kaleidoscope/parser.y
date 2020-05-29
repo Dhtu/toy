@@ -14,7 +14,6 @@
     PrototypeAST *prototype;
     FunctionAST *function;
     std::string *string;
-    std::vector<AST*> *astvec;
     std::vector<ExprAST*> *exprvec;
     std::vector<std::string> *strvec;
     char yychar;
@@ -43,6 +42,7 @@
 %type <prototype> prototype
 %type <strvec> func_decl_args
 
+
 /* Operator precedence for mathematical operators */
 %left TPLUS TMINUS
 %left TMUL TDIV
@@ -56,11 +56,20 @@ call_args : /*blank*/  { $$ = new std::vector<ExprAST*>(); }
           ;
 program : astlist;
 
-astlist : ast {std::cout<<"parse ast\n";}
-        | astlist ast{std::cout<<"add ast\n";}
+astlist : /*blank*/  { }
+        | ast {
+            std::cout<<"parse ast\n";
+            }
+        | astlist ast{
+            std::cout<<"add ast\n";
+            }
 
-ast : expr  {std::cout<<"ast parse expr\n";}
-        | func_decl {std::cout<<"ast parse func_decl\n";}
+ast : expr  {
+    std::cout<<"ast parse expr\n";
+    }
+        | func_decl {
+            std::cout<<"ast parse func_decl\n";
+            }
 
 
 func_decl : TDEF prototype expr{
@@ -96,10 +105,10 @@ expr : TDOUBLE {
         std::cout<<"Parse Variable: "<<((*Result).Name)<<std::endl;
         $$ = Result;
     }
-    // | TIDENTIFIER TLPAREN call_args TRPAREN{
-    //     $$ = new CallExprAST(*$1,*$3);
-    //     std::cout<<"Call length: "<<dynamic_cast<CallExprAST *>($$)->Args.size()<<std::endl;
-    // }
+    | TIDENTIFIER TLPAREN call_args TRPAREN{
+        $$ = new CallExprAST(*$1,*$3);
+        std::cout<<"Call length: "<<dynamic_cast<CallExprAST *>($$)->Args.size()<<std::endl;
+    }
     | expr BINOP expr{
         std::cout<<"binOP: "<<char($2)<<std::endl;
         $$ = new BinaryExprAST(char($2),$1,$3);

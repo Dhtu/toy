@@ -15,17 +15,10 @@ using namespace llvm;
 //===----------------------------------------------------------------------===//
 // Abstract Syntax Tree (aka Parse Tree)
 //===----------------------------------------------------------------------===//
-class AST
-{
-public:
-    virtual ~AST() = default;
-
-    virtual Value *codegen() = 0;
-};
 
 
 /// ExprAST - Base class for all expression nodes.
-class ExprAST:public AST
+class ExprAST
 {
 public:
     virtual ~ExprAST() = default;
