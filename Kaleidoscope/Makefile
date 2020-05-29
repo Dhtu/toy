@@ -1,47 +1,27 @@
 CC = clang++ #这里的编译器用的是clang, 如果要换成gcc的话, 可能要把10行的-O3去掉
-C = clang
 LFALGS = `llvm-config --cxxflags`
 LLIBS = `llvm-config --ldflags --system-libs --libs core mcjit native`
 
-all: reset Main clean
+all: Main
 
-# 所有cpp的默认编译选项, 默认加了LLVM的库的链接, 因为我想不到我们有什么文件是不要链接LLVM的库的
-# 前端也需要AST类, 而AST类里有code generator, 所以也是绕不开LLVM的
+
 %.o:%.cpp
 		$(CC) -c -g -O3 $? $(LFALGS) -o $@
 
-%.o:%.c
-		$(C) -c -g -O3 $? $(LFALGS) -o $@
 
-# bison的默认编译选项, 从somename.y --> somename.tab.c somename.tab.h
-%.tab.c %.tab.h: %.y
-		$(YYAC) -d $<
+parser.tab.cpp parser.tab.h: parser.y
+		bison -d parser.y
+		mv parser.tab.c parser.tab.cpp
 
 # flex的默认编译选项, 从somename.l --> somename.c
 %.cpp: %.l
 		$(LEX) -o $@ $<
 
-# 官方例程的链接
-toy:toy.o AST.o
-		$(CC) $? -o  $@  $(LFALGS) $(LLIBS)
 
-# JIT
-JIT:JIT.o
-		$(CC) $? -o  $@  $(LFALGS) $(LLIBS)
 
 # Main
 Main:Main.o parser.tab.cpp lexer.o AST.o
 		$(CC) $? -o  $@  $(LFALGS) $(LLIBS)
-
-%.tab.cpp: %.tab.c
-		mv $? $?pp
-
-
-# AST.o: AST.cpp
-# 		$(CC) -c -g -O3 $? $(LFALGS) -o $@
-
-# toy.o: toy.cpp
-# 		$(CC) -c -g -O3 $? $(LFALGS) -o $@
 
 
 
@@ -49,10 +29,10 @@ Main:Main.o parser.tab.cpp lexer.o AST.o
 .PYHONY: clean
 
 clean:
-		- rm *.o
+		- rm *.o *.tab.c *.tab.cpp *.tab.h
 
 # 删除目标代码与最终文件
 .PYHONY: reset
 
 reset: 
-		- rm toy Main
+		- rm Main
