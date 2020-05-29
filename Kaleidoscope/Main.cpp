@@ -19,7 +19,7 @@ int main()
 
     printf("> "); 
     // Make the module, which holds all the code.
-    TheModule = std::make_unique<Module>("my cool jit", TheContext);
+    TheModule = new Module("my cool jit", TheContext);
     yyparse();
 
     // Print out all of the generated code.

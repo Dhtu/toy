@@ -6,7 +6,7 @@
 
 LLVMContext TheContext;
 IRBuilder<> Builder(TheContext);
-std::unique_ptr<Module> TheModule;
+Module *TheModule;
 std::map<std::string, Value *> NamedValues;
 
 /// LogError* - These are little helper functions for error handling.
@@ -90,7 +90,7 @@ Function *PrototypeAST::codegen()
         FunctionType::get(Type::getDoubleTy(TheContext), Doubles, false);
 
     Function *F =
-        Function::Create(FT, Function::ExternalLinkage, Name, TheModule.get());
+        Function::Create(FT, Function::ExternalLinkage, Name, TheModule);
 
     // Set names for all arguments.
     unsigned Idx = 0;
