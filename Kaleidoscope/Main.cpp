@@ -11,11 +11,6 @@ extern int yyparse();
 
 int main()
 {
-    //Parser入口
-
-    //IR generator入口
-
-    //object code生成入口
 
     printf("> "); 
     // Make the module, which holds all the code.

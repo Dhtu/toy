@@ -121,9 +121,7 @@ ast : expr
                 fprintf(stderr, "\n");
             }
         }
-    | if_decl {
-            std::cout<<"ast parse if_decl\n";
-           };
+    
 
 
 
@@ -136,11 +134,6 @@ prototype : TIDENTIFIER TLPAREN func_decl_args TRPAREN{
     $$ = new PrototypeAST(*$1,*$3);
     std::cout<<"Prototype length: "<<dynamic_cast<PrototypeAST *>($$)->Args.size()<<std::endl;
 }
-
-if_decl : TIF expr TTHEN expr TELSE expr {
-        //   $$ = new IfExprAST($2, $4, $6);
-        //   std::cout<<"IF:"<<std::endl;
-};
 
 func_decl_args : /*blank*/  { $$ = new std::vector<std::string>(); }
            | TIDENTIFIER { $$ = new std::vector<std::string>(); $$->push_back(*$1); }
@@ -172,6 +165,11 @@ expr : TDOUBLE {
         std::cout<<"BinOP: "<<char($2)<<std::endl;
         $$ = new BinaryExprAST(char($2),$1,$3);
     }
+    | TIF expr TTHEN expr TELSE expr 
+    {
+        Log("ast parse if_decl\n");
+        $$ = new IfExprAST($2, $4, $6);
+    };
 
 
 
