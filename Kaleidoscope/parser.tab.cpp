@@ -74,7 +74,7 @@
 
     void Log(const std::string Str)
     {
-        std::cout<<Str<<std::endl;
+        // std::cout<<Str<<std::endl;
     }
 
 #line 81 "parser.tab.c" /* yacc.c:339  */
@@ -480,7 +480,7 @@ static const yytype_uint8 yyrline[] =
 {
        0,    58,    58,    59,    60,    62,    64,    67,    71,    75,
       79,    84,   104,   114,   128,   133,   138,   139,   140,   143,
-     149,   154,   160,   164,   168,   172,   177
+     150,   156,   163,   168,   173,   178,   183
 };
 #endif
 
@@ -1313,7 +1313,7 @@ yyreduce:
   case 7:
 #line 67 "parser.y" /* yacc.c:1646  */
     {
-            std::cout<<"Parse ast\n";
+            Log("Parse ast");
             std::cout<<"> ";
             }
 #line 1320 "parser.tab.c" /* yacc.c:1646  */
@@ -1322,7 +1322,7 @@ yyreduce:
   case 8:
 #line 71 "parser.y" /* yacc.c:1646  */
     {
-            std::cout<<"Parse ast\n";
+            Log("Parse ast");
             std::cout<<"> ";
             }
 #line 1329 "parser.tab.c" /* yacc.c:1646  */
@@ -1331,7 +1331,7 @@ yyreduce:
   case 9:
 #line 75 "parser.y" /* yacc.c:1646  */
     {
-            std::cout<<"Add ast\n";
+            Log("Parse ast");
             std::cout<<"> ";
             }
 #line 1338 "parser.tab.c" /* yacc.c:1646  */
@@ -1340,7 +1340,7 @@ yyreduce:
   case 10:
 #line 79 "parser.y" /* yacc.c:1646  */
     {
-            std::cout<<"Add ast\n";
+            Log("Parse ast");
             std::cout<<"> ";
             }
 #line 1347 "parser.tab.c" /* yacc.c:1646  */
@@ -1402,7 +1402,7 @@ yyreduce:
 #line 128 "parser.y" /* yacc.c:1646  */
     {
     (yyval.function) = new FunctionAST((yyvsp[-1].prototype),(yyvsp[0].expr));
-    std::cout<<"Function: "<<std::endl;
+    // std::cout<<"Function: "<<std::endl;
 }
 #line 1408 "parser.tab.c" /* yacc.c:1646  */
     break;
@@ -1411,7 +1411,7 @@ yyreduce:
 #line 133 "parser.y" /* yacc.c:1646  */
     {
     (yyval.prototype) = new PrototypeAST(*(yyvsp[-3].string),*(yyvsp[-1].strvec));
-    std::cout<<"Prototype length: "<<dynamic_cast<PrototypeAST *>((yyval.prototype))->Args.size()<<std::endl;
+    // std::cout<<"Prototype length: "<<dynamic_cast<PrototypeAST *>($$)->Args.size()<<std::endl;
 }
 #line 1417 "parser.tab.c" /* yacc.c:1646  */
     break;
@@ -1439,80 +1439,86 @@ yyreduce:
     { 
         auto Result = new NumberExprAST(atof((yyvsp[0].string)->c_str())); 
         delete (yyvsp[0].string);
-        std::cout<<"Parse double: "<<((*Result).Val)<<std::endl;
+        // std::cout<<"Parse double: "<<((*Result).Val)<<std::endl;
+        Log("Parse double");
         (yyval.expr) = Result;
     }
-#line 1446 "parser.tab.c" /* yacc.c:1646  */
+#line 1447 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 149 "parser.y" /* yacc.c:1646  */
+#line 150 "parser.y" /* yacc.c:1646  */
     {
         auto Result = (yyvsp[-1].expr);
-        std::cout<<"Parse (expr)"<<std::endl;
+        // std::cout<<"Parse (expr)"<<std::endl;
+        Log("Parse (expr)");
         (yyval.expr) = Result;
     }
-#line 1456 "parser.tab.c" /* yacc.c:1646  */
+#line 1458 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 154 "parser.y" /* yacc.c:1646  */
+#line 156 "parser.y" /* yacc.c:1646  */
     {
         auto Result = new VariableExprAST(*(yyvsp[0].string)); 
         delete (yyvsp[0].string);
-        std::cout<<"Parse Variable: "<<((*Result).Name)<<std::endl;
+        // std::cout<<"Parse Variable: "<<((*Result).Name)<<std::endl;
+        Log("Parse Variable : "+((*Result).Name));
         (yyval.expr) = Result;
     }
-#line 1467 "parser.tab.c" /* yacc.c:1646  */
+#line 1470 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 160 "parser.y" /* yacc.c:1646  */
+#line 163 "parser.y" /* yacc.c:1646  */
     {
         (yyval.expr) = new CallExprAST(*(yyvsp[-3].string),*(yyvsp[-1].exprvec));
-        std::cout<<"Call length: "<<dynamic_cast<CallExprAST *>((yyval.expr))->Args.size()<<std::endl;
+        // std::cout<<"Call length: "<<dynamic_cast<CallExprAST *>($$)->Args.size()<<std::endl;
+        Log("Parse Call");
     }
-#line 1476 "parser.tab.c" /* yacc.c:1646  */
+#line 1480 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 164 "parser.y" /* yacc.c:1646  */
+#line 168 "parser.y" /* yacc.c:1646  */
     {
-        std::cout<<"BinOP: "<<char((yyvsp[-1].token))<<std::endl;
+        // std::cout<<"BinOP: "<<char($2)<<std::endl;
         (yyval.expr) = new BinaryExprAST(char((yyvsp[-1].token)),(yyvsp[-2].expr),(yyvsp[0].expr));
+        Log("Parse BinOP");
     }
-#line 1485 "parser.tab.c" /* yacc.c:1646  */
+#line 1490 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 168 "parser.y" /* yacc.c:1646  */
+#line 173 "parser.y" /* yacc.c:1646  */
     {
-        std::cout<<"Assign: "<< char((yyvsp[-1].token))<<std::endl;
+        // std::cout<<"Assign: "<< char($2)<<std::endl;
+        Log("Parse Assign");
         (yyval.expr) = new BinaryExprAST(char((yyvsp[-1].token)),(yyvsp[-2].expr),(yyvsp[0].expr));
     }
-#line 1494 "parser.tab.c" /* yacc.c:1646  */
+#line 1500 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 173 "parser.y" /* yacc.c:1646  */
+#line 179 "parser.y" /* yacc.c:1646  */
     {
         Log("ast parse if_decl\n");
         (yyval.expr) = new IfExprAST((yyvsp[-4].expr), (yyvsp[-2].expr), (yyvsp[0].expr));
     }
-#line 1503 "parser.tab.c" /* yacc.c:1646  */
+#line 1509 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 178 "parser.y" /* yacc.c:1646  */
+#line 184 "parser.y" /* yacc.c:1646  */
     {
         Log("ast parse for_decl\n");
         (yyval.expr) = new ForExprAST(*(yyvsp[-8].string), (yyvsp[-6].expr), (yyvsp[-4].expr), (yyvsp[-2].expr), (yyvsp[0].expr));
     }
-#line 1512 "parser.tab.c" /* yacc.c:1646  */
+#line 1518 "parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1516 "parser.tab.c" /* yacc.c:1646  */
+#line 1522 "parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

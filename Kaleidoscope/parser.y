@@ -9,7 +9,7 @@
 
     void Log(const std::string Str)
     {
-        std::cout<<Str<<std::endl;
+        // std::cout<<Str<<std::endl;
     }
 %}
 
@@ -65,19 +65,19 @@ astlist : /*blank*/  {
             std::cout<<"> ";
          }
         | ast TENDLINE{
-            std::cout<<"Parse ast\n";
+            Log("Parse ast");
             std::cout<<"> ";
             }
         | ast{
-            std::cout<<"Parse ast\n";
+            Log("Parse ast");
             std::cout<<"> ";
             }
         | astlist ast TENDLINE{
-            std::cout<<"Add ast\n";
+            Log("Parse ast");
             std::cout<<"> ";
             }
         | astlist ast{
-            std::cout<<"Add ast\n";
+            Log("Parse ast");
             std::cout<<"> ";
             }
 
@@ -127,12 +127,12 @@ ast : expr
 
 func_decl : TDEF prototype expr{
     $$ = new FunctionAST($2,$3);
-    std::cout<<"Function: "<<std::endl;
+    // std::cout<<"Function: "<<std::endl;
 }
 
 prototype : TIDENTIFIER TLPAREN func_decl_args TRPAREN{
     $$ = new PrototypeAST(*$1,*$3);
-    std::cout<<"Prototype length: "<<dynamic_cast<PrototypeAST *>($$)->Args.size()<<std::endl;
+    // std::cout<<"Prototype length: "<<dynamic_cast<PrototypeAST *>($$)->Args.size()<<std::endl;
 }
 
 func_decl_args : /*blank*/  { $$ = new std::vector<std::string>(); }
@@ -143,30 +143,36 @@ func_decl_args : /*blank*/  { $$ = new std::vector<std::string>(); }
 expr : TDOUBLE { 
         auto Result = new NumberExprAST(atof($1->c_str())); 
         delete $1;
-        std::cout<<"Parse double: "<<((*Result).Val)<<std::endl;
+        // std::cout<<"Parse double: "<<((*Result).Val)<<std::endl;
+        Log("Parse double");
         $$ = Result;
     }
     | TLPAREN expr TRPAREN {
         auto Result = $2;
-        std::cout<<"Parse (expr)"<<std::endl;
+        // std::cout<<"Parse (expr)"<<std::endl;
+        Log("Parse (expr)");
         $$ = Result;
     }
     | TIDENTIFIER {
         auto Result = new VariableExprAST(*$1); 
         delete $1;
-        std::cout<<"Parse Variable: "<<((*Result).Name)<<std::endl;
+        // std::cout<<"Parse Variable: "<<((*Result).Name)<<std::endl;
+        Log("Parse Variable : "+((*Result).Name));
         $$ = Result;
     }
     | TIDENTIFIER TLPAREN call_args TRPAREN{
         $$ = new CallExprAST(*$1,*$3);
-        std::cout<<"Call length: "<<dynamic_cast<CallExprAST *>($$)->Args.size()<<std::endl;
+        // std::cout<<"Call length: "<<dynamic_cast<CallExprAST *>($$)->Args.size()<<std::endl;
+        Log("Parse Call");
     }
     | expr BINOP expr{
-        std::cout<<"BinOP: "<<char($2)<<std::endl;
+        // std::cout<<"BinOP: "<<char($2)<<std::endl;
         $$ = new BinaryExprAST(char($2),$1,$3);
+        Log("Parse BinOP");
     }
     | expr TASSIGN expr{
-        std::cout<<"Assign: "<< char($2)<<std::endl;
+        // std::cout<<"Assign: "<< char($2)<<std::endl;
+        Log("Parse Assign");
         $$ = new BinaryExprAST(char($2),$1,$3);
     }
     | TIF expr TTHEN expr TELSE expr 
