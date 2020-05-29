@@ -1,0 +1,3 @@
+extern acc(x,y,z)
+def testloop(n)
+for i=1 , i<n ,1.0 in acc(2.2,2.2,2.33)

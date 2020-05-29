@@ -113,6 +113,19 @@ public:
   Value *codegen() override;
 };
 
+/// ForExprAST - Expression class for for/in.
+class ForExprAST : public ExprAST
+{
+public:
+    std::string VarName;
+    ExprAST *Start, *End, *Step, *Body;
+
+    ForExprAST(const std::string &VarName, ExprAST *Start, ExprAST *End, ExprAST *Step, ExprAST *Body) :
+    VarName(VarName), Start(Start), End(End), Body(Body) { }
+
+    Value *codegen() override;
+};
+
 std::unique_ptr<ExprAST> LogError(const char *Str);
 
 extern LLVMContext TheContext;

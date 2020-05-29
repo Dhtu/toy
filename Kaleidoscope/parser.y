@@ -30,7 +30,7 @@
    they represent.
  */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE
-%token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL BINOP
+%token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TASSIGN BINOP
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT
 %token <token> TPLUS TMINUS TMUL TDIV
 %token <token> TIF TTHEN TELSE TFOR TIN
@@ -41,7 +41,7 @@
    we call an ident (defined by union type ident) we are really
    calling an (NIdentifier*). It makes the compiler happy.
  */
-%type <expr> expr if_decl
+%type <expr> expr
 %type <exprvec> call_args
 %type <function> func_decl
 %type <prototype> prototype
@@ -165,12 +165,17 @@ expr : TDOUBLE {
         std::cout<<"BinOP: "<<char($2)<<std::endl;
         $$ = new BinaryExprAST(char($2),$1,$3);
     }
+    | expr TASSIGN expr{
+        std::cout<<"Assign: "<< char($2)<<std::endl;
+        $$ = new BinaryExprAST(char($2),$1,$3);
+    }
     | TIF expr TTHEN expr TELSE expr 
     {
         Log("ast parse if_decl\n");
         $$ = new IfExprAST($2, $4, $6);
+    }
+    | TFOR TIDENTIFIER TASSIGN expr TCOMMA expr TCOMMA expr TIN expr
+    {
+        Log("ast parse for_decl\n");
+        $$ = new ForExprAST(*$2, $4, $6, $8, $10);
     };
-
-
-
-

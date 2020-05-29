@@ -54,7 +54,7 @@ extern int yydebug;
     TCLE = 264,
     TCGT = 265,
     TCGE = 266,
-    TEQUAL = 267,
+    TASSIGN = 267,
     BINOP = 268,
     TLPAREN = 269,
     TRPAREN = 270,

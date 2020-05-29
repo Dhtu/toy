@@ -22,7 +22,7 @@
 "in"                    return TOKEN(TIN);
 [a-zA-Z_][a-zA-Z0-9_]*  SAVE_TOKEN; return TIDENTIFIER;
 [0-9]*\.?[0-9]+         SAVE_TOKEN; return TDOUBLE;
-"="                     {yylval.yychar = *yytext; return BINOP;}
+"="                     {yylval.yychar = *yytext; return TASSIGN;}
 "=="                    return TOKEN(TCEQ);
 "!="                    return TOKEN(TCNE);
 

@@ -834,7 +834,7 @@ SAVE_TOKEN; return TDOUBLE;
 case 13:
 YY_RULE_SETUP
 #line 25 "lexer.l"
-{yylval.yychar = *yytext; return BINOP;}
+{yylval.yychar = *yytext; return TASSIGN;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
