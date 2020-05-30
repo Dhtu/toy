@@ -24,6 +24,10 @@ Main:Main.o parser.tab.cpp lexer.o AST.o LLVM.o
 		$(CC) Main.o parser.tab.cpp lexer.o AST.o LLVM.o -o  $@  $(LFALGS) $(LLIBS)
 
 
+JIT:JIT.o
+		$(CC) $? -o  $@  $(LFALGS) $(LLIBS)
+
+
 
 # 删除目标代码文件
 .PYHONY: clean

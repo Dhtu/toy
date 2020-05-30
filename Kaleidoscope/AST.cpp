@@ -2,11 +2,27 @@
 // Code Generation
 //===----------------------------------------------------------------------===//
 #include "AST.h"
-std::map<std::string, std::unique_ptr<PrototypeAST>> FunctionProtos;
+std::map<std::string, PrototypeAST*> FunctionProtos;
 /// LogError* - These are little helper functions for error handling.
 std::unique_ptr<ExprAST> LogError(const char *Str)
 {
     fprintf(stderr, "Error: %s\n", Str);
+    return nullptr;
+}
+
+Function *getFunction(std::string Name)
+{
+    // First, see if the function has already been added to the current module.
+    if (auto *F = TheModule->getFunction(Name))
+        return F;
+
+    // If not, check whether we can codegen the declaration from some existing
+    // prototype.
+    auto FI = FunctionProtos.find(Name);
+    if (FI != FunctionProtos.end())
+        return FI->second->codegen();
+
+    // If no existing prototype exists, return null.
     return nullptr;
 }
 
@@ -57,7 +73,7 @@ Value *BinaryExprAST::codegen()
 Value *CallExprAST::codegen()
 {
     // Look up the name in the global module table.
-    Function *CalleeF = TheModule->getFunction(Callee);
+    Function *CalleeF = getFunction(Callee);
     if (!CalleeF)
         return LogErrorV("Unknown function referenced");
 
@@ -97,12 +113,11 @@ Function *PrototypeAST::codegen()
 Function *FunctionAST::codegen()
 {
 
-    // First, check for an existing function from a previous 'extern' declaration.
-    Function *TheFunction = TheModule->getFunction(Proto->getName());
-
-    if (!TheFunction)
-        TheFunction = Proto->codegen();
-
+    // Transfer ownership of the prototype to the FunctionProtos map, but keep a
+    // reference to it for use below.
+    auto &P = *Proto;
+    FunctionProtos[Proto->getName()] = Proto;
+    Function *TheFunction = getFunction(P.getName());
     if (!TheFunction)
         return nullptr;
 
@@ -113,7 +128,7 @@ Function *FunctionAST::codegen()
     // Record the function arguments in the NamedValues map.
     NamedValues.clear();
     for (auto &Arg : TheFunction->args())
-        NamedValues[std::string(Arg.getName())] = &Arg;
+        NamedValues[Arg.getName()] = &Arg;
 
     if (Value *RetVal = Body->codegen())
     {
@@ -123,7 +138,7 @@ Function *FunctionAST::codegen()
         // Validate the generated code, checking for consistency.
         verifyFunction(*TheFunction);
 
-        // Optimize the function.
+        // Run the optimizer on the function.
         TheFPM->run(*TheFunction);
 
         return TheFunction;

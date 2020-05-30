@@ -128,6 +128,6 @@ public:
 
 std::unique_ptr<ExprAST> LogError(const char *Str);
 
-extern std::map<std::string, std::unique_ptr<PrototypeAST>> FunctionProtos;
+extern std::map<std::string, PrototypeAST*> FunctionProtos;
 
 #endif

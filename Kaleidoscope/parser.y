@@ -96,7 +96,7 @@ ast : expr
 
             if (auto FnAST = top)
             {
-                if (auto *FnIR = FnAST->codegen())
+                if (FnAST->codegen())
                 {
                     // JIT the module containing the anonymous expression, keeping a handle so
                     // we can free it later.
@@ -114,9 +114,6 @@ ast : expr
 
                     // Delete the anonymous expression module from the JIT.
                     TheJIT->removeModule(H);
-                    // fprintf(stderr, "Read top-level :");
-                    // FnIR->print(errs());
-                    // fprintf(stderr, "\n");
                 }
             }
         }
@@ -128,6 +125,8 @@ ast : expr
                 fprintf(stderr, "Read function :");
                 FnIR->print(errs());
                 fprintf(stderr, "\n");
+                TheJIT->addModule(std::move(TheModule));
+                InitializeModuleAndPassManager();
             }
         }
     | TEXTERN prototype
@@ -138,6 +137,7 @@ ast : expr
                 fprintf(stderr, "Read : ");
                 FnIR->print(errs());
                 fprintf(stderr, "\n");
+                FunctionProtos[$2->getName()] = $2;
             }
         }
     
