@@ -20,6 +20,7 @@
 "else"                  return TOKEN(TELSE);
 "for"                   return TOKEN(TFOR);
 "in"                    return TOKEN(TIN);
+"var"                   return TOKEN(TVAR);
 [a-zA-Z_][a-zA-Z0-9_]*  SAVE_TOKEN; return TIDENTIFIER;
 [0-9]*\.?[0-9]+         SAVE_TOKEN; return TDOUBLE;
 "="                     {yylval.yychar = *yytext; return TASSIGN;}

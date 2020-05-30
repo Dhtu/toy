@@ -45,6 +45,7 @@ public:
     std::string Name;
     VariableExprAST(const std::string &Name) : Name(Name) {}
     Value *codegen() override;
+    const std::string &getName() const { return Name; }
 };
 
 /// BinaryExprAST - Expression class for a binary operator.
@@ -57,6 +58,18 @@ public:
     BinaryExprAST(char Op, ExprAST *LHS,
                   ExprAST *RHS)
         : Op(Op), LHS(LHS), RHS(RHS) {}
+
+    Value *codegen() override;
+};
+
+/// VarExprAST - Expression class for var/in
+class VarExprAST : public ExprAST {
+public:
+    std::vector<std::pair<std::string, ExprAST *>> VarNames;
+    ExprAST *Body;
+
+    VarExprAST(std::vector<std::pair<std::string, ExprAST *>> VarNames, ExprAST *Body)
+    : VarNames(VarNames), Body(Body) { }
 
     Value *codegen() override;
 };

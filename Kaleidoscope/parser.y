@@ -24,6 +24,7 @@
     std::string *string;
     std::vector<ExprAST*> *exprvec;
     std::vector<std::string> *strvec;
+    std::vector<std::pair<std::string, ExprAST *>> *varvec;
     char yychar;
     int token;
 }
@@ -36,7 +37,7 @@
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TASSIGN BINOP
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT
 %token <token> TPLUS TMINUS TMUL TDIV
-%token <token> TIF TTHEN TELSE TFOR TIN
+%token <token> TIF TTHEN TELSE TFOR TIN TVAR
 %token <token> TRETURN TEXTERN TDEF TENDLINE
 
 /* Define the type of ExprAST our nonterminal symbols represent.
@@ -49,6 +50,7 @@
 %type <function> func_decl
 %type <prototype> prototype
 %type <strvec> func_decl_args
+%type <varvec> var_decl_args
 
 
 /* Operator precedence for mathematical operators */
@@ -204,4 +206,19 @@ expr : TDOUBLE {
     {
         Log("ast parse for_decl\n");
         $$ = new ForExprAST(*$2, $4, $6, $8, $10);
-    };
+    }
+    | TVAR var_decl_args TIN expr{
+        $$ = new VarExprAST(*$2, $4);
+        Log("Var");
+    } ;  
+
+    
+var_decl_args : /*blank*/ { $$ = new std::vector<std::pair<std::string, ExprAST *>>();}
+              | TIDENTIFIER TASSIGN expr{
+          $$ = new std::vector<std::pair<std::string, ExprAST *>>;
+              $$->push_back(std::pair<std::string, ExprAST *>(*$1, $3));
+              }
+              |var_decl_args TCOMMA TIDENTIFIER TASSIGN expr{
+              $1->push_back(std::pair<std::string, ExprAST *>(*$3, $5));
+              $$ = $1;
+              };

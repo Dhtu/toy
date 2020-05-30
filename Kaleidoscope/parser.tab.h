@@ -71,10 +71,11 @@ extern int yydebug;
     TELSE = 281,
     TFOR = 282,
     TIN = 283,
-    TRETURN = 284,
-    TEXTERN = 285,
-    TDEF = 286,
-    TENDLINE = 287
+    TVAR = 284,
+    TRETURN = 285,
+    TEXTERN = 286,
+    TDEF = 287,
+    TENDLINE = 288
   };
 #endif
 
@@ -91,10 +92,11 @@ union YYSTYPE
     std::string *string;
     std::vector<ExprAST*> *exprvec;
     std::vector<std::string> *strvec;
+    std::vector<std::pair<std::string, ExprAST *>> *varvec;
     char yychar;
     int token;
 
-#line 98 "parser.tab.h" /* yacc.c:1909  */
+#line 100 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

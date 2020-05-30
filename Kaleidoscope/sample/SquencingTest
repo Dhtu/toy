@@ -1,0 +1,3 @@
+def testloop(n,x)
+for i=1 , i<n ,1.0 in 1 : x;
+testloop(10,1);
