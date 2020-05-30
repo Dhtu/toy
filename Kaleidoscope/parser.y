@@ -112,6 +112,7 @@ ast : expr
                     double (*FP)() = (double (*)())(intptr_t)cantFail(ExprSymbol.getAddress());
                     fprintf(stderr, "Evaluated to %f\n", FP());
 
+
                     // Delete the anonymous expression module from the JIT.
                     TheJIT->removeModule(H);
                 }

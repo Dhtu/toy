@@ -9,12 +9,12 @@
             "name": "(gdb) Launch toy",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/Kaleidoscope/bin/toy",
+            "program": "${workspaceFolder}/Kaleidoscope/Main",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": true,
+            "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
                 {

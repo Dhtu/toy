@@ -7,7 +7,7 @@
             "label": "build toy", //task的名字,调用方式就是 task build  
             "command": "make", //会在命令行中调用此命令  
             "args": [
-                "toy", //${workspaceRootFolderName} 会被替换成 根目录 即:vscode_c_demo            
+                "", //${workspaceRootFolderName} 会被替换成 根目录 即:vscode_c_demo            
                 "-C",
                 "${workspaceFolder}/Kaleidoscope"
             ],
