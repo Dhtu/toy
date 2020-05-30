@@ -20,8 +20,8 @@ parser.tab.cpp parser.tab.h: parser.y
 
 
 # Main
-Main:Main.o parser.tab.cpp lexer.o AST.o
-		$(CC) $? -o  $@  $(LFALGS) $(LLIBS)
+Main:Main.o parser.tab.cpp lexer.o AST.o LLVM.o
+		$(CC) Main.o parser.tab.cpp lexer.o AST.o LLVM.o -o  $@  $(LFALGS) $(LLIBS)
 
 
 

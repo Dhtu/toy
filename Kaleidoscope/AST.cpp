@@ -2,12 +2,7 @@
 // Code Generation
 //===----------------------------------------------------------------------===//
 #include "AST.h"
-
-LLVMContext TheContext;
-IRBuilder<> Builder(TheContext);
-Module *TheModule;
-std::map<std::string, Value *> NamedValues;
-
+std::map<std::string, std::unique_ptr<PrototypeAST>> FunctionProtos;
 /// LogError* - These are little helper functions for error handling.
 std::unique_ptr<ExprAST> LogError(const char *Str)
 {
@@ -89,7 +84,7 @@ Function *PrototypeAST::codegen()
         FunctionType::get(Type::getDoubleTy(TheContext), Doubles, false);
 
     Function *F =
-        Function::Create(FT, Function::ExternalLinkage, Name, TheModule);
+        Function::Create(FT, Function::ExternalLinkage, Name, TheModule.get());
 
     // Set names for all arguments.
     unsigned Idx = 0;
@@ -97,11 +92,6 @@ Function *PrototypeAST::codegen()
         Arg.setName(Args[Idx++]);
 
     return F;
-}
-
-void FunctionAST::Hello()
-{
-    std::cout << "hello" << std::endl;
 }
 
 Function *FunctionAST::codegen()
@@ -132,6 +122,9 @@ Function *FunctionAST::codegen()
 
         // Validate the generated code, checking for consistency.
         verifyFunction(*TheFunction);
+
+        // Optimize the function.
+        TheFPM->run(*TheFunction);
 
         return TheFunction;
     }
@@ -194,82 +187,86 @@ Value *IfExprAST::codegen()
     return PN;
 }
 
-Value *ForExprAST::codegen() {
-  // Emit the start code first, without 'variable' in scope.
-  Value *StartVal = Start->codegen();
-  if (!StartVal)
-    return nullptr;
+Value *ForExprAST::codegen()
+{
+    // Emit the start code first, without 'variable' in scope.
+    Value *StartVal = Start->codegen();
+    if (!StartVal)
+        return nullptr;
 
-  // Make the new basic block for the loop header, inserting after current
-  // block.
-  Function *TheFunction = Builder.GetInsertBlock()->getParent();
-  BasicBlock *PreheaderBB = Builder.GetInsertBlock();
-  BasicBlock *LoopBB = BasicBlock::Create(TheContext, "loop", TheFunction);
+    // Make the new basic block for the loop header, inserting after current
+    // block.
+    Function *TheFunction = Builder.GetInsertBlock()->getParent();
+    BasicBlock *PreheaderBB = Builder.GetInsertBlock();
+    BasicBlock *LoopBB = BasicBlock::Create(TheContext, "loop", TheFunction);
 
-  // Insert an explicit fall through from the current block to the LoopBB.
-  Builder.CreateBr(LoopBB);
+    // Insert an explicit fall through from the current block to the LoopBB.
+    Builder.CreateBr(LoopBB);
 
-  // Start insertion in LoopBB.
-  Builder.SetInsertPoint(LoopBB);
+    // Start insertion in LoopBB.
+    Builder.SetInsertPoint(LoopBB);
 
-  // Start the PHI node with an entry for Start.
-  PHINode *Variable =
-      Builder.CreatePHI(Type::getDoubleTy(TheContext), 2, VarName);
-  Variable->addIncoming(StartVal, PreheaderBB);
+    // Start the PHI node with an entry for Start.
+    PHINode *Variable =
+        Builder.CreatePHI(Type::getDoubleTy(TheContext), 2, VarName);
+    Variable->addIncoming(StartVal, PreheaderBB);
 
-  // Within the loop, the variable is defined equal to the PHI node.  If it
-  // shadows an existing variable, we have to restore it, so save it now.
-  Value *OldVal = NamedValues[VarName];
-  NamedValues[VarName] = Variable;
+    // Within the loop, the variable is defined equal to the PHI node.  If it
+    // shadows an existing variable, we have to restore it, so save it now.
+    Value *OldVal = NamedValues[VarName];
+    NamedValues[VarName] = Variable;
 
-  // Emit the body of the loop.  This, like any other expr, can change the
-  // current BB.  Note that we ignore the value computed by the body, but don't
-  // allow an error.
-  if (!Body->codegen())
-    return nullptr;
+    // Emit the body of the loop.  This, like any other expr, can change the
+    // current BB.  Note that we ignore the value computed by the body, but don't
+    // allow an error.
+    if (!Body->codegen())
+        return nullptr;
 
-  // Emit the step value.
-  Value *StepVal = nullptr;
-  if (Step) {
-    StepVal = Step->codegen();
-    if (!StepVal)
-      return nullptr;
-  } else {
-    // If not specified, use 1.0.
-    StepVal = ConstantFP::get(TheContext, APFloat(1.0));
-  }
+    // Emit the step value.
+    Value *StepVal = nullptr;
+    if (Step)
+    {
+        StepVal = Step->codegen();
+        if (!StepVal)
+            return nullptr;
+    }
+    else
+    {
+        // If not specified, use 1.0.
+        StepVal = ConstantFP::get(TheContext, APFloat(1.0));
+    }
 
-  Value *NextVar = Builder.CreateFAdd(Variable, StepVal, "nextvar");
+    Value *NextVar = Builder.CreateFAdd(Variable, StepVal, "nextvar");
 
-  // Compute the end condition.
-  Value *EndCond = End->codegen();
-  if (!EndCond)
-    return nullptr;
+    // Compute the end condition.
+    Value *EndCond = End->codegen();
+    if (!EndCond)
+        return nullptr;
 
-  // Convert condition to a bool by comparing non-equal to 0.0.
-  EndCond = Builder.CreateFCmpONE(
-      EndCond, ConstantFP::get(TheContext, APFloat(0.0)), "loopcond");
+    // Convert condition to a bool by comparing non-equal to 0.0.
+    EndCond = Builder.CreateFCmpONE(
+        EndCond, ConstantFP::get(TheContext, APFloat(0.0)), "loopcond");
 
-  // Create the "after loop" block and insert it.
-  BasicBlock *LoopEndBB = Builder.GetInsertBlock();
-  BasicBlock *AfterBB =
-      BasicBlock::Create(TheContext, "afterloop", TheFunction);
+    // Create the "after loop" block and insert it.
+    BasicBlock *LoopEndBB = Builder.GetInsertBlock();
+    BasicBlock *AfterBB =
+        BasicBlock::Create(TheContext, "afterloop", TheFunction);
 
-  // Insert the conditional branch into the end of LoopEndBB.
-  Builder.CreateCondBr(EndCond, LoopBB, AfterBB);
+    // Insert the conditional branch into the end of LoopEndBB.
+    Builder.CreateCondBr(EndCond, LoopBB, AfterBB);
 
-  // Any new code will be inserted in AfterBB.
-  Builder.SetInsertPoint(AfterBB);
+    // Any new code will be inserted in AfterBB.
+    Builder.SetInsertPoint(AfterBB);
 
-  // Add a new entry to the PHI node for the backedge.
-  Variable->addIncoming(NextVar, LoopEndBB);
+    // Add a new entry to the PHI node for the backedge.
+    Variable->addIncoming(NextVar, LoopEndBB);
 
-  // Restore the unshadowed variable.
-  if (OldVal)
-    NamedValues[VarName] = OldVal;
-  else
-    NamedValues.erase(VarName);
+    // Restore the unshadowed variable.
+    if (OldVal)
+        NamedValues[VarName] = OldVal;
+    else
+        NamedValues.erase(VarName);
 
-  // for expr always returns 0.0.
-  return Constant::getNullValue(Type::getDoubleTy(TheContext));
+    // for expr always returns 0.0.
+    return Constant::getNullValue(Type::getDoubleTy(TheContext));
 }

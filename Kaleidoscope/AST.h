@@ -128,9 +128,6 @@ public:
 
 std::unique_ptr<ExprAST> LogError(const char *Str);
 
-extern LLVMContext TheContext;
-extern IRBuilder<> Builder;
-extern Module *TheModule;
-extern std::map<std::string, Value *> NamedValues;
+extern std::map<std::string, std::unique_ptr<PrototypeAST>> FunctionProtos;
 
 #endif

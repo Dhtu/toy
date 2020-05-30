@@ -8,13 +8,16 @@ int yyerror(const char *, ...);
 extern int yylex();
 extern int yyparse();
 
-
 int main()
 {
-
-    printf("> "); 
+    InitializeNativeTarget();
+    InitializeNativeTargetAsmPrinter();
+    InitializeNativeTargetAsmParser();
+    printf("> ");
+    // TheJIT = std::make_unique<orc::KaleidoscopeJIT>();
+    TheJIT = llvm::make_unique<orc::KaleidoscopeJIT>();
     // Make the module, which holds all the code.
-    TheModule = new Module("my cool jit", TheContext);
+    InitializeModuleAndPassManager();
     yyparse();
 
     // Print out all of the generated code.
