@@ -9,7 +9,7 @@
             "name": "(gdb) Launch toy",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/Kaleidoscope/Main",
+            "program": "${workspaceFolder}/key/Main",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -23,7 +23,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build toy"
+            "preLaunchTask": "build key"
         }
     ]
 }

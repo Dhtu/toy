@@ -138,8 +138,6 @@ Function *FunctionAST::codegen()
         // Validate the generated code, checking for consistency.
         verifyFunction(*TheFunction);
 
-        // Run the optimizer on the function.
-        TheFPM->run(*TheFunction);
 
         return TheFunction;
     }

@@ -2,7 +2,7 @@
 // Code Generation
 //===----------------------------------------------------------------------===//
 #include "AST.h"
-std::map<std::string, PrototypeAST*> FunctionProtos;
+std::map<std::string, PrototypeAST> FunctionProtos;
 /// LogError* - These are little helper functions for error handling.
 std::unique_ptr<ExprAST> LogError(const char *Str)
 {

@@ -1,6 +1,6 @@
 CC = clang++ #这里的编译器用的是clang, 如果要换成gcc的话, 可能要把10行的-O3去掉
 LFALGS = `llvm-config --cxxflags`
-LLIBS = `llvm-config --ldflags --system-libs --libs core mcjit native`
+LLIBS = `llvm-config --cxxflags --ldflags --system-libs --libs all`
 
 all: Main
 
@@ -27,6 +27,8 @@ Main:Main.o parser.tab.cpp lexer.o AST.o LLVM.o
 JIT:JIT.o
 		$(CC) $? -o  $@  $(LFALGS) $(LLIBS)
 
+test:test.o output.o
+		$(CC) $? -o  $@
 
 
 # 删除目标代码文件
