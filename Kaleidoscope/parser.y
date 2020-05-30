@@ -86,8 +86,7 @@ astlist : /*blank*/  {
             std::cout<<"> ";
             }
 
-ast : expr
-        {
+ast : expr{
             Log("Parse Top Level Expr");
             auto prototype = new PrototypeAST("__anon_expr",*(new std::vector<std::string>()));
             auto top = new FunctionAST(prototype,$1);
@@ -98,11 +97,16 @@ ast : expr
 
             if (auto FnAST = top)
             {
-                if (FnAST->codegen())
+                if (auto *FnIR = FnAST->codegen())
                 {
                     // JIT the module containing the anonymous expression, keeping a handle so
                     // we can free it later.
                     auto H = TheJIT->addModule(std::move(TheModule));
+
+                    fprintf(stderr, "Read function :");
+                    FnIR->print(errs());
+                    fprintf(stderr, "\n");
+                    
                     InitializeModuleAndPassManager();
 
                     // Search the JIT for the __anon_expr symbol.
@@ -114,6 +118,7 @@ ast : expr
                     double (*FP)() = (double (*)())(intptr_t)cantFail(ExprSymbol.getAddress());
                     fprintf(stderr, "Evaluated to %f\n", FP());
 
+                    
 
                     // Delete the anonymous expression module from the JIT.
                     TheJIT->removeModule(H);
