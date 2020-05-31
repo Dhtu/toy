@@ -89,18 +89,19 @@ astlist : /*blank*/  {
 
 ast : expr{
             Log("Parse Top Level Expr");
-            auto prototype = new PrototypeAST("__anon_expr",*(new std::vector<std::string>()));
-            auto top = new FunctionAST(prototype,$1);
-            if(top!=NULL)
-            {
+            auto prototype = new PrototypeAST("__anon_expr", *(new std::vector<std::string>()));
+            auto top = new FunctionAST(prototype, $1);
+            if(top!=NULL){
                 Log("top!=null");
             }
-
-            if (auto FnAST = top)
-            {
-                auto *FnIR = FnAST->codegen();
+            if(auto FnAST = top){
+                if (auto *FnIR = FnAST->codegen()){
+                    fprintf(stderr, "Read top-level :");
+                    FnIR->print(errs());
+                    fprintf(stderr, "\n");
+                }
             }
-        }
+      }
     | func_decl
         {
             Log("Parsed a function definition.");
@@ -143,6 +144,12 @@ prototype : TIDENTIFIER TLPAREN func_decl_args TRPAREN{
             Log(FnName);
             // std::cout<<"Prototype length: "<<dynamic_cast<PrototypeAST *>($$)->Args.size()<<std::endl;
             }
+        | TUNARY BINOP TLPAREN func_decl_args TRPAREN{
+            std::string FnName = "unary";
+            FnName += (char)$2;
+            $$ = new PrototypeAST(FnName,*$4);
+            Log(FnName); 
+          }
 
 func_decl_args : /*blank*/  { $$ = new std::vector<std::string>(); }
            | TIDENTIFIER { $$ = new std::vector<std::string>(); $$->push_back(*$1); }
@@ -197,7 +204,10 @@ expr : TDOUBLE {
     | TVAR var_decl_args TIN expr{
         $$ = new VarExprAST(*$2, $4);
         Log("Var");
-    } ;  
+    } 
+    | BINOP expr{
+        $$ = new UnaryExprAST((char)$1, $2);
+      }
 
     
 var_decl_args : /*blank*/ { $$ = new std::vector<std::pair<std::string, ExprAST *>>();}

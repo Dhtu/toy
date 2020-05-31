@@ -26,13 +26,10 @@
 [a-zA-Z_][a-zA-Z0-9_]*  SAVE_TOKEN; return TIDENTIFIER;
 [0-9]*\.?[0-9]+         SAVE_TOKEN; return TDOUBLE;
 "="                     {yylval.yychar = *yytext; return TASSIGN;}
-"=="                    return TOKEN(TCEQ);
-"!="                    return TOKEN(TCNE);
+
 
 "<"                     {yylval.yychar = *yytext; return BINOP;}
-"<="                    return TOKEN(TCLE);
 ">"                     {yylval.yychar = *yytext; return BINOP;}
-">="                    return TOKEN(TCGE);
 "("                     return TOKEN(TLPAREN);
 ")"                     return TOKEN(TRPAREN);
 "{"                     return TOKEN(TLBRACE);

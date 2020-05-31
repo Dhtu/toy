@@ -51,6 +51,18 @@ Value *VariableExprAST::codegen()
     return Builder.CreateLoad(V, Name.c_str());
 }
 
+Value *UnaryExprAST::codegen() {
+  Value *OperandV = Operand->codegen();
+  if (!OperandV)
+    return nullptr;
+
+  Function *F = getFunction(std::string("unary") + Opcode);
+  if (!F)
+    return LogErrorV("Unknown unary operator");
+
+  return Builder.CreateCall(F, OperandV, "unop");
+}
+
 Value *BinaryExprAST::codegen()
 {
     // Special case '=' because we don't want to emit the LHS as an expression.

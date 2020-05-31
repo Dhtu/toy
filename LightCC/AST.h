@@ -17,7 +17,6 @@ using namespace llvm;
 // Abstract Syntax Tree (aka Parse Tree)
 //===----------------------------------------------------------------------===//
 
-
 /// ExprAST - Base class for all expression nodes.
 class ExprAST
 {
@@ -61,15 +60,27 @@ public:
 
     Value *codegen() override;
 };
+/// UnaryExprAST - Expression class for a unary operator.
+class UnaryExprAST : public ExprAST
+{
+    char Opcode;
+    ExprAST *Operand;
 
+public:
+    UnaryExprAST(char Opcode, ExprAST *Operand)
+        : Opcode(Opcode), Operand(Operand) {}
+
+    Value *codegen() override;
+};
 /// VarExprAST - Expression class for var/in
-class VarExprAST : public ExprAST {
+class VarExprAST : public ExprAST
+{
 public:
     std::vector<std::pair<std::string, ExprAST *>> VarNames;
     ExprAST *Body;
 
     VarExprAST(std::vector<std::pair<std::string, ExprAST *>> VarNames, ExprAST *Body)
-    : VarNames(VarNames), Body(Body) { }
+        : VarNames(VarNames), Body(Body) {}
 
     Value *codegen() override;
 };
@@ -105,19 +116,22 @@ public:
     Function *codegen();
     const std::string &getName() const { return Name; }
 
-    bool isUnaryOp() const {
+    bool isUnaryOp() const
+    {
         return IsOperator && Args.size() == 1;
     }
-    bool isBinaryOp() const { 
+    bool isBinaryOp() const
+    {
         return IsOperator && Args.size() == 2;
     }
 
-    char getOperatorName() const {
+    char getOperatorName() const
+    {
         assert(isUnaryOp() || isBinaryOp());
         return Name[Name.size() - 1];
-  }
+    }
 
-  unsigned getBinaryPrecedence() const { return Precedence; } 
+    unsigned getBinaryPrecedence() const { return Precedence; }
 };
 
 /// FunctionAST - This class represents a function definition itself.
@@ -138,10 +152,10 @@ class IfExprAST : public ExprAST
 {
 public:
     ExprAST *Cond, *Then, *Else;
-  IfExprAST(ExprAST *Cond, ExprAST *Then,ExprAST *Else)
-      : Cond(Cond), Then(Then), Else(Else) {}
+    IfExprAST(ExprAST *Cond, ExprAST *Then, ExprAST *Else)
+        : Cond(Cond), Then(Then), Else(Else) {}
 
-  Value *codegen() override;
+    Value *codegen() override;
 };
 
 /// ForExprAST - Expression class for for/in.
@@ -151,14 +165,13 @@ public:
     std::string VarName;
     ExprAST *Start, *End, *Step, *Body;
 
-    ForExprAST(const std::string &VarName, ExprAST *Start, ExprAST *End, ExprAST *Step, ExprAST *Body) :
-    VarName(VarName), Start(Start), End(End), Body(Body) { }
+    ForExprAST(const std::string &VarName, ExprAST *Start, ExprAST *End, ExprAST *Step, ExprAST *Body) : VarName(VarName), Start(Start), End(End), Body(Body) {}
 
     Value *codegen() override;
 };
 
 std::unique_ptr<ExprAST> LogError(const char *Str);
 
-extern std::map<std::string, PrototypeAST*> FunctionProtos;
+extern std::map<std::string, PrototypeAST *> FunctionProtos;
 
 #endif

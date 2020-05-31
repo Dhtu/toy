@@ -10,7 +10,12 @@ def fib(x)
   else
     fib(x-1)+fib(x-2);
 
+def unary!(v)
+  if v then
+    0
+  else
+    1;
 
 extern printd(x);
 def Main()
-    printd(fib(10));
+    printd(!0);

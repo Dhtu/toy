@@ -1,1 +1,2 @@
 ./LightCC < sam*/Light* 2> ll/LightCCTest.ll
+./LightCC < sam*/Unary* 2> ll/UnaryTest.ll
