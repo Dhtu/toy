@@ -1,0 +1,3 @@
+def acc(x) x = x+1;
+acc(2);
+var x=1 in 1;

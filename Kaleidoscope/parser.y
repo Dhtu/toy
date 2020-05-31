@@ -98,32 +98,7 @@ ast : expr{
 
             if (auto FnAST = top)
             {
-                if (auto *FnIR = FnAST->codegen())
-                {
-                    // JIT the module containing the anonymous expression, keeping a handle so
-                    // we can free it later.
-                    auto H = TheJIT->addModule(std::move(TheModule));
-
-                    fprintf(stderr, "Read function :");
-                    FnIR->print(errs());
-                    fprintf(stderr, "\n");
-
-                    InitializeModuleAndPassManager();
-
-                    // Search the JIT for the __anon_expr symbol.
-                    auto ExprSymbol = TheJIT->findSymbol("__anon_expr");
-                    assert(ExprSymbol && "Function not found");
-
-                    // Get the symbol's address and cast it to the right type (takes no
-                    // arguments, returns a double) so we can call it as a native function.
-                    double (*FP)() = (double (*)())(intptr_t)cantFail(ExprSymbol.getAddress());
-                    fprintf(stderr, "Evaluated to %f\n", FP());
-
-                    
-
-                    // Delete the anonymous expression module from the JIT.
-                    TheJIT->removeModule(H);
-                }
+                auto *FnIR = FnAST->codegen();
             }
         }
     | func_decl
@@ -134,8 +109,6 @@ ast : expr{
                 fprintf(stderr, "Read function :");
                 FnIR->print(errs());
                 fprintf(stderr, "\n");
-                TheJIT->addModule(std::move(TheModule));
-                InitializeModuleAndPassManager();
             }
         }
     | TEXTERN prototype

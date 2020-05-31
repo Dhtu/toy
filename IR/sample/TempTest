@@ -1,4 +1,0 @@
-extern sin(x);
-extern cos(y);
-def sscc(x,y) sin(x)*sin(x)+cos(y)*cos(y);
-sscc(1,1);

@@ -1,0 +1,5 @@
+def binary: 6 (LHS,RHS) RHS;
+def testloop(n)
+var ret = 2.33 in
+(for i=1 , i<n ,1.0 in ret = ret+1):ret;
+testloop(10);

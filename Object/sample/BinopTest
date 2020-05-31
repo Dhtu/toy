@@ -1,0 +1,2 @@
+def binary: 6 (LHS,RHS) RHS;
+5:6;

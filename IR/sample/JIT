@@ -1,4 +1,0 @@
-extern sin(x);
-extern cos(x);
-def foo(x) sin(x);
-foo(1);
