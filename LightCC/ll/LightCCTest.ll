@@ -94,7 +94,8 @@ declare double @printd(double)
 
 define double @Main() {
 entry:
-  %calltmp = call double @printd(double 1.000000e+01)
+  %unop = call double @"unary!"(double 0.000000e+00)
+  %calltmp = call double @printd(double %unop)
   ret double %calltmp
 }
 

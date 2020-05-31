@@ -2,7 +2,7 @@ CC = clang++ #这里的编译器用的是clang, 如果要换成gcc的话, 可能
 LFALGS = `llvm-config --cxxflags`
 LLIBS = `llvm-config --ldflags --system-libs --libs core mcjit native`
 
-all: LightCC
+all: LightJIT
 
 
 %.o:%.cpp
@@ -20,18 +20,9 @@ parser.tab.cpp parser.tab.h: parser.y
 
 
 # Main
-LightCC:Main.o parser.tab.cpp lexer.o AST.o LLVM.o
+LightJIT:Main.o parser.tab.cpp lexer.o AST.o LLVM.o
 		$(CC) Main.o parser.tab.cpp lexer.o AST.o LLVM.o -o  $@  $(LFALGS) $(LLIBS)
 
-
-JIT:JIT.o
-		$(CC) $? -o  $@  $(LFALGS) $(LLIBS)
-
-test:test.o output.o
-		$(CC) test.o output.o -o  $@
-
-output.o:
-		- ./LightCC < ./sample/LightCCTest 2> ll/LightCCTest.ll
 
 # 删除目标代码文件
 .PYHONY: clean

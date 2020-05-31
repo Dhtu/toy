@@ -1,0 +1,8 @@
+// Logical unary not.
+def unary!(v)
+  if v then
+    0
+  else
+    1;
+
+!0;
