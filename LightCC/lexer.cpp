@@ -943,12 +943,12 @@ YY_RULE_SETUP
 case 33:
 YY_RULE_SETUP
 #line 49 "lexer.l"
-{printf("注释: %s\n",yytext);}
+;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 50 "lexer.l"
-{printf("BINOP token: %s\n",yytext); yylval.yychar = *yytext;return BINOP;}
+{yylval.yychar = *yytext;return BINOP;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP

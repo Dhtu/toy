@@ -1,0 +1,16 @@
+def average(x,y) (x + y) * 0.5;
+
+extern sin(x);
+extern cos(y);
+def sscc(x,y) sin(x)*sin(x)+cos(y)*cos(y);
+
+def fib(x)
+  if x < 3 then
+    1
+  else
+    fib(x-1)+fib(x-2);
+
+
+extern printd(x);
+def Main()
+    printd(fib(10));

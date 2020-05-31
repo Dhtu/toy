@@ -11,7 +11,7 @@ extern int yyparse();
 int main()
 {
   // Prime the first token.
-  fprintf(stderr, "ready> ");
+//   fprintf(stderr, "ready> ");
 
   InitializeModuleAndPassManager();
 
@@ -72,7 +72,7 @@ int main()
   pass.run(*TheModule);
   dest.flush();
 
-  outs() << "Wrote " << Filename << "\n";
+//   outs() << "Wrote " << Filename << "\n";
 
   return 0;
 }
@@ -85,24 +85,4 @@ int yyerror(const char *s, ...)
   ret = vfprintf(stderr, s, va);
   va_end(va);
   return ret;
-}
-
-#ifdef _WIN32
-#define DLLEXPORT __declspec(dllexport)
-#else
-#define DLLEXPORT
-#endif
-
-/// putchard - putchar that takes a double and returns 0.
-extern "C" DLLEXPORT double putchard(double X)
-{
-  fputc((char)X, stderr);
-  return 0;
-}
-
-/// printd - printf that takes a double prints it as "%f\n", returning 0.
-extern "C" DLLEXPORT double printd(double X)
-{
-  fprintf(stderr, "%f\n", X);
-  return 0;
 }

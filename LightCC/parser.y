@@ -68,23 +68,23 @@ call_args : /*blank*/  { $$ = new std::vector<ExprAST*>(); }
 program : astlist;
 
 astlist : /*blank*/  {
-            std::cout<<"> ";
+            // std::cout<<"> ";
          }
         | ast TENDLINE{
             Log("Parse ast");
-            std::cout<<"> ";
+            // std::cout<<"> ";
             }
         | ast{
             Log("Parse ast");
-            std::cout<<"> ";
+            // std::cout<<"> ";
             }
         | astlist ast TENDLINE{
             Log("Parse ast");
-            std::cout<<"> ";
+            // std::cout<<"> ";
             }
         | astlist ast{
             Log("Parse ast");
-            std::cout<<"> ";
+            // std::cout<<"> ";
             }
 
 ast : expr{
@@ -106,7 +106,7 @@ ast : expr{
             Log("Parsed a function definition.");
             if (auto *FnIR = $1->codegen())
             {
-                fprintf(stderr, "Read function :");
+                // fprintf(stderr, "Read function :");
                 FnIR->print(errs());
                 fprintf(stderr, "\n");
             }
@@ -116,7 +116,7 @@ ast : expr{
             Log("Parsed a function extern declaration.");
             if (auto *FnIR = $2->codegen())
             {
-                fprintf(stderr, "Read : ");
+                // fprintf(stderr, "Read : ");
                 FnIR->print(errs());
                 fprintf(stderr, "\n");
                 FunctionProtos[$2->getName()] = $2;

@@ -46,7 +46,7 @@
 "*"                     {yylval.yychar = *yytext; return BINOP;}
 "/"                     {yylval.yychar = *yytext; return BINOP;}
 
-"//".*                  {printf("注释: %s\n",yytext);}
-.                       {printf("BINOP token: %s\n",yytext); yylval.yychar = *yytext;return BINOP;}
+"//".*                  ;
+.                       {yylval.yychar = *yytext;return BINOP;}
 EOF                     {yyterminate();}
 %%
