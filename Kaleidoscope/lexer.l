@@ -21,6 +21,8 @@
 "for"                   return TOKEN(TFOR);
 "in"                    return TOKEN(TIN);
 "var"                   return TOKEN(TVAR);
+"binary"                return TOKEN(TBINARY);
+"unary"                 return TOKEN(TUNARY);
 [a-zA-Z_][a-zA-Z0-9_]*  SAVE_TOKEN; return TIDENTIFIER;
 [0-9]*\.?[0-9]+         SAVE_TOKEN; return TDOUBLE;
 "="                     {yylval.yychar = *yytext; return TASSIGN;}
@@ -45,6 +47,6 @@
 "/"                     {yylval.yychar = *yytext; return BINOP;}
 
 "//".*                  {printf("注释: %s\n",yytext);}
-.                       {printf("Unknown token: %s\n",yytext); yylval.yychar = *yytext;}
+.                       {printf("BINOP token: %s\n",yytext); yylval.yychar = *yytext;return BINOP;}
 EOF                     {yyterminate();}
 %%

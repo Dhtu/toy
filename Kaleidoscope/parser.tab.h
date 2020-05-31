@@ -66,16 +66,18 @@ extern int yydebug;
     TMINUS = 276,
     TMUL = 277,
     TDIV = 278,
-    TIF = 279,
-    TTHEN = 280,
-    TELSE = 281,
-    TFOR = 282,
-    TIN = 283,
-    TVAR = 284,
-    TRETURN = 285,
-    TEXTERN = 286,
-    TDEF = 287,
-    TENDLINE = 288
+    TBINARY = 279,
+    TUNARY = 280,
+    TIF = 281,
+    TTHEN = 282,
+    TELSE = 283,
+    TFOR = 284,
+    TIN = 285,
+    TVAR = 286,
+    TRETURN = 287,
+    TEXTERN = 288,
+    TDEF = 289,
+    TENDLINE = 290
   };
 #endif
 
@@ -96,7 +98,7 @@ union YYSTYPE
     char yychar;
     int token;
 
-#line 100 "parser.tab.h" /* yacc.c:1909  */
+#line 102 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

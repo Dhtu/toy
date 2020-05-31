@@ -37,6 +37,7 @@
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TASSIGN BINOP
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT
 %token <token> TPLUS TMINUS TMUL TDIV
+%token <token> TBINARY TUNARY
 %token <token> TIF TTHEN TELSE TFOR TIN TVAR
 %token <token> TRETURN TEXTERN TDEF TENDLINE
 
@@ -106,7 +107,7 @@ ast : expr{
                     fprintf(stderr, "Read function :");
                     FnIR->print(errs());
                     fprintf(stderr, "\n");
-                    
+
                     InitializeModuleAndPassManager();
 
                     // Search the JIT for the __anon_expr symbol.
@@ -158,9 +159,17 @@ func_decl : TDEF prototype expr{
 }
 
 prototype : TIDENTIFIER TLPAREN func_decl_args TRPAREN{
-    $$ = new PrototypeAST(*$1,*$3);
-    // std::cout<<"Prototype length: "<<dynamic_cast<PrototypeAST *>($$)->Args.size()<<std::endl;
-}
+            $$ = new PrototypeAST(*$1,*$3);
+            // std::cout<<"Prototype length: "<<dynamic_cast<PrototypeAST *>($$)->Args.size()<<std::endl;
+        }
+        | TBINARY BINOP TDOUBLE TLPAREN func_decl_args TRPAREN{
+            std::string FnName = "binary";
+            FnName += (char)$2; 
+            $$ = new PrototypeAST(FnName,*$5,true, atoi($3->c_str())); 
+            
+            Log(FnName);
+            // std::cout<<"Prototype length: "<<dynamic_cast<PrototypeAST *>($$)->Args.size()<<std::endl;
+            }
 
 func_decl_args : /*blank*/  { $$ = new std::vector<std::string>(); }
            | TIDENTIFIER { $$ = new std::vector<std::string>(); $$->push_back(*$1); }

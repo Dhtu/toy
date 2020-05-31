@@ -3,6 +3,9 @@
 //===----------------------------------------------------------------------===//
 #include "AST.h"
 std::map<std::string, PrototypeAST *> FunctionProtos;
+/// BinopPrecedence - This holds the precedence for each binary operator that is
+/// defined.
+std::map<char, int> BinopPrecedence;
 /// LogError* - These are little helper functions for error handling.
 std::unique_ptr<ExprAST> LogError(const char *Str)
 {
@@ -154,6 +157,10 @@ Function *FunctionAST::codegen()
     if (!TheFunction)
         return nullptr;
 
+    // If this is an operator, install it.
+    if (P.isBinaryOp())
+        BinopPrecedence[P.getOperatorName()] = P.getBinaryPrecedence();
+
     // Create a new basic block to start insertion into.
     BasicBlock *BB = BasicBlock::Create(TheContext, "entry", TheFunction);
     Builder.SetInsertPoint(BB);
@@ -188,6 +195,8 @@ Function *FunctionAST::codegen()
 
     // Error reading body, remove function.
     TheFunction->eraseFromParent();
+    if (P.isBinaryOp())
+        BinopPrecedence.erase(P.getOperatorName());
 
     return nullptr;
 }
