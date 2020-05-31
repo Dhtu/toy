@@ -1386,9 +1386,9 @@ yyreduce:
                     // we can free it later.
                     auto H = TheJIT->addModule(std::move(TheModule));
 
-                    fprintf(stderr, "Read function :");
-                    FnIR->print(errs());
-                    fprintf(stderr, "\n");
+                    // fprintf(stderr, "Read function :");
+                    // FnIR->print(errs());
+                    // fprintf(stderr, "\n");
 
                     InitializeModuleAndPassManager();
 
@@ -1417,9 +1417,9 @@ yyreduce:
             Log("Parsed a function definition.");
             if (auto *FnIR = (yyvsp[0].function)->codegen())
             {
-                fprintf(stderr, "Read function :");
-                FnIR->print(errs());
-                fprintf(stderr, "\n");
+                // fprintf(stderr, "Read function :");
+                // FnIR->print(errs());
+                // fprintf(stderr, "\n");
                 TheJIT->addModule(std::move(TheModule));
                 InitializeModuleAndPassManager();
             }
@@ -1433,9 +1433,9 @@ yyreduce:
             Log("Parsed a function extern declaration.");
             if (auto *FnIR = (yyvsp[0].prototype)->codegen())
             {
-                fprintf(stderr, "Read : ");
-                FnIR->print(errs());
-                fprintf(stderr, "\n");
+                // fprintf(stderr, "Read : ");
+                // FnIR->print(errs());
+                // fprintf(stderr, "\n");
                 FunctionProtos[(yyvsp[0].prototype)->getName()] = (yyvsp[0].prototype);
             }
         }

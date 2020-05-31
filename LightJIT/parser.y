@@ -104,9 +104,9 @@ ast : expr{
                     // we can free it later.
                     auto H = TheJIT->addModule(std::move(TheModule));
 
-                    fprintf(stderr, "Read function :");
-                    FnIR->print(errs());
-                    fprintf(stderr, "\n");
+                    // fprintf(stderr, "Read function :");
+                    // FnIR->print(errs());
+                    // fprintf(stderr, "\n");
 
                     InitializeModuleAndPassManager();
 
@@ -131,9 +131,9 @@ ast : expr{
             Log("Parsed a function definition.");
             if (auto *FnIR = $1->codegen())
             {
-                fprintf(stderr, "Read function :");
-                FnIR->print(errs());
-                fprintf(stderr, "\n");
+                // fprintf(stderr, "Read function :");
+                // FnIR->print(errs());
+                // fprintf(stderr, "\n");
                 TheJIT->addModule(std::move(TheModule));
                 InitializeModuleAndPassManager();
             }
@@ -143,9 +143,9 @@ ast : expr{
             Log("Parsed a function extern declaration.");
             if (auto *FnIR = $2->codegen())
             {
-                fprintf(stderr, "Read : ");
-                FnIR->print(errs());
-                fprintf(stderr, "\n");
+                // fprintf(stderr, "Read : ");
+                // FnIR->print(errs());
+                // fprintf(stderr, "\n");
                 FunctionProtos[$2->getName()] = $2;
             }
         }
